@@ -5,14 +5,15 @@ type Props = {
   iconSrc: string;
   label: string;
   isNew?: boolean;
+  newLabel?: string;
 };
 
-const ProductCard = ({ iconSrc, label, isNew }: Props) => {
+const ProductCard = ({ iconSrc, label, isNew, newLabel = 'Ново' }: Props) => {
   return (
     <div className="relative">
       {isNew && (
         <div className="absolute py-[5px] ml-1 mt-1 px-3 bg-green-500/90 rounded-tl-lg rounded-br-lg text-white">
-          Ново
+          {newLabel}
         </div>
       )}
       <div
@@ -26,7 +27,7 @@ const ProductCard = ({ iconSrc, label, isNew }: Props) => {
           width={60}
           height={60}
         />
-        <h2 className="text-nowrapfont-semibold text-xl text-center mt-1 md:mt-2">
+        <h2 className="text-nowrapfont-semibold text-xl mt-1 md:mt-2">
           {label}
         </h2>
       </div>

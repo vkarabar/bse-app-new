@@ -9,6 +9,7 @@ type Props = {
   value: string;
   onChange: (city: string) => void;
   label?: string;
+  placeholder?: string;
   inputClassName?: string;
 };
 
@@ -17,6 +18,7 @@ export function CitySearchSelect({
   value,
   onChange,
   label = 'Град (опционално)',
+  placeholder = 'Пребарај град',
   inputClassName,
 }: Props) {
   const [query, setQuery] = useState(value);
@@ -78,7 +80,7 @@ export function CitySearchSelect({
         value={query}
         onChange={(e) => handleInputChange(e.target.value)}
         onFocus={() => setOpen(true)}
-        placeholder="Пребарај град"
+        placeholder={placeholder}
         className={cn(inputClassName, 'bg-white')}
         autoComplete="off"
       />

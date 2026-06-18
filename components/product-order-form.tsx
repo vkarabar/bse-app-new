@@ -5,6 +5,7 @@ import {
   ColorSwatchPicker,
   type ColorSwatchItem,
 } from '@/components/color-swatches';
+import { useTranslations } from '@/components/locale-provider';
 import {
   PERGOLI_DIMENSIONS,
   type PergolaDimensionId,
@@ -29,6 +30,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { postJsonApi } from '@/lib/post-json-api';
 import type { OrderProduct } from '@/lib/orders';
 import type { MotorVariant } from '@/lib/motori-porti-data';
 
@@ -43,50 +45,16 @@ type Props = {
 const inputClassName =
   'w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent';
 
-const SECTION_COPY: Record<OrderProduct, string> = {
-  vrati:
-    'Внесете димензии и контакт — ќе ви одговориме со цена и рок за монтажа.',
-  pergoli:
-    'Изберете димензии и боја — ќе ви одговориме со цена и рок за монтажа.',
-  zavesi:
-    'Внесете димензии и боја — ќе ви одговориме со цена и рок за монтажа.',
-  'motori-porti':
-    'Изберете опции — цените се прикажани подолу. Ќе ве контактираме за потврда.',
-};
-
-const SECTION_TITLE = {
-  quote: 'Побарајте понуда',
-  order: 'Нарачајте',
-} as const;
-
-const SUBMIT_LABEL = {
-  quote: 'Побарај понуда',
-  order: 'Испрати нарачка',
-} as const;
-
-const REVIEW_COPY = {
-  quote: {
-    title: 'Преглед на барањето',
-    description: 'Проверете ги деталите пред да го испратите барањето.',
-    confirm: 'Потврди барање',
-  },
-  order: {
-    title: 'Преглед на нарачката',
-    description: 'Проверете ги деталите пред да ја испратите нарачката.',
-    confirm: 'Потврди и испрати',
-  },
-} as const;
-
 export function ProductOrderForm({
   product,
   motorVariant: fixedMotorVariant,
   colors = [],
-  widthLabel = 'Ширина (см)',
-  heightLabel = 'Висина (см)',
+  widthLabel,
+  heightLabel,
 }: Props) {
+  const t = useTranslations();
   const isFixedPrice = productHasFixedPrice(product);
   const formMode = isFixedPrice ? 'order' : 'quote';
-  const copy = REVIEW_COPY[formMode];
 
   const formRef = useRef<HTMLFormElement>(null);
   const [color, setColor] = useState('');
@@ -107,7 +75,7 @@ export function ProductOrderForm({
   const motorVariant = fixedMotorVariant;
 
   const motorPricing = motorVariant
-    ? getMotoriPortiPricing(motorVariant)
+    ? getMotoriPortiPricing(motorVariant, t)
     : null;
 
   const motorTotal = useMemo(() => {
@@ -118,8 +86,8 @@ export function ProductOrderForm({
   }, [motorVariant, mounting, railMeters]);
 
   const reviewRows = useMemo(
-    () => (pendingPayload ? buildOrderReviewRows(pendingPayload) : []),
-    [pendingPayload],
+    () => (pendingPayload ? buildOrderReviewRows(pendingPayload, t) : []),
+    [pendingPayload, t],
   );
 
   const reviewTotal = useMemo(
@@ -184,20 +152,18 @@ export function ProductOrderForm({
     setMessage('');
 
     try {
-      const res = await fetch('/api/order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pendingPayload),
-      });
+      const result = await postJsonApi('/api/order', pendingPayload);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error ?? 'Настана грешка.');
+      if (!result.ok) {
+        throw new Error(
+          result.error === 'invalid_response'
+            ? t('forms.order.errorServer')
+            : result.error ?? t('forms.order.errorGeneric'),
+        );
       }
 
       setStatus('success');
-      setMessage(data.message);
+      setMessage(result.data?.message ?? t('orders.success'));
       setReviewOpen(false);
       setPendingPayload(null);
       formRef.current?.reset();
@@ -209,9 +175,7 @@ export function ProductOrderForm({
     } catch (err) {
       setStatus('error');
       setMessage(
-        err instanceof Error
-          ? err.message
-          : 'Настана грешка. Обидете се повторно.',
+        err instanceof Error ? err.message : t('forms.order.errorRetry'),
       );
     }
   }
@@ -237,14 +201,14 @@ export function ProductOrderForm({
             {motorPricing.packageIncludes ? (
               <>
                 <p className="text-sm font-medium text-slate-800">
-                  Комплет:{' '}
+                  {t('forms.order.motoriPorti.packageLabel')}{' '}
                   <span className="font-semibold text-sky-700">
                     {formatEur(motorPricing.motorEur)}
                   </span>
                 </p>
                 <div className="rounded-lg bg-slate-50 px-4 py-3">
                   <p className="text-sm font-medium text-slate-800 mb-2">
-                    Во цената е вклучено:
+                    {t('forms.order.motoriPorti.includedTitle')}
                   </p>
                   <ul className="space-y-1 text-sm text-slate-700">
                     {motorPricing.packageIncludes.map((item) => (
@@ -255,7 +219,7 @@ export function ProductOrderForm({
               </>
             ) : (
               <p className="text-sm font-medium text-slate-800">
-                Мотор за лизгачка порта:{' '}
+                {t('forms.order.motoriPorti.motorLabel')}{' '}
                 <span className="font-semibold text-sky-700">
                   {formatEur(motorPricing.motorEur)}
                 </span>
@@ -270,7 +234,9 @@ export function ProductOrderForm({
                 className="mt-1 h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
               />
               <span className="text-sm text-slate-800">
-                <span className="font-semibold">Монтажа</span>
+                <span className="font-semibold">
+                  {t('forms.order.motoriPorti.mounting')}
+                </span>
                 <span className="block text-slate-600">
                   +{formatEur(motorPricing.mountingEur)}
                 </span>
@@ -283,13 +249,18 @@ export function ProductOrderForm({
                 className="block text-sm font-medium text-slate-700 mb-1"
               >
                 {motorPricing.includedRailMeters > 0
-                  ? `Дополнителни шини [метри] (опционално)`
-                  : 'Шини за порта [метри] (опционално)'}
+                  ? t('forms.order.motoriPorti.extraRailsOptional')
+                  : t('forms.order.motoriPorti.railsOptional')}
               </label>
               <p className="text-xs text-slate-500 mb-2">
                 {motorPricing.includedRailMeters > 0
-                  ? `${motorPricing.includedRailMeters} m шини се вклучени во комплетот · ${formatEur(motorPricing.railPerMeterEur)} / дополнителен метар`
-                  : `${formatEur(motorPricing.railPerMeterEur)} / метар`}
+                  ? t('forms.order.motoriPorti.includedRailsHint', {
+                      meters: motorPricing.includedRailMeters,
+                      price: formatEur(motorPricing.railPerMeterEur),
+                    })
+                  : t('forms.order.motoriPorti.perMeterHint', {
+                      price: formatEur(motorPricing.railPerMeterEur),
+                    })}
               </p>
               <input
                 id={`${product}-rails`}
@@ -300,7 +271,9 @@ export function ProductOrderForm({
                 value={railMeters}
                 onChange={(e) => setRailMeters(e.target.value)}
                 placeholder={
-                  motorPricing.includedRailMeters > 0 ? 'на пр. 2' : 'на пр. 6'
+                  motorPricing.includedRailMeters > 0
+                    ? t('forms.order.motoriPorti.extraRailsPlaceholder')
+                    : t('forms.order.motoriPorti.railsPlaceholder')
                 }
                 className={inputClassName}
               />
@@ -308,14 +281,15 @@ export function ProductOrderForm({
 
             {motorTotal !== null && (
               <p className="rounded-lg bg-sky-50 px-4 py-3 text-sm font-semibold text-sky-800">
-                Проценета вкупна цена: {formatEur(motorTotal)}
+                {t('forms.order.motoriPorti.estimatedTotal')}{' '}
+                {formatEur(motorTotal)}
               </p>
             )}
           </div>
         ) : product === 'pergoli' ? (
           <fieldset>
             <legend className="block text-sm font-medium text-slate-700 mb-2">
-              Димензии
+              {t('forms.order.dimensions')}
             </legend>
             <div className="grid sm:grid-cols-2 gap-3">
               {PERGOLI_DIMENSIONS.map((option) => (
@@ -348,7 +322,7 @@ export function ProductOrderForm({
                 htmlFor={`${product}-width`}
                 className="block text-sm font-medium text-slate-700 mb-1"
               >
-                {widthLabel}
+                {widthLabel ?? t('forms.order.width')}
               </label>
               <input
                 id={`${product}-width`}
@@ -358,7 +332,7 @@ export function ProductOrderForm({
                 max={2000}
                 step={1}
                 required
-                placeholder="на пр. 300"
+                placeholder={t('forms.order.widthPlaceholder')}
                 className={inputClassName}
               />
             </div>
@@ -367,7 +341,7 @@ export function ProductOrderForm({
                 htmlFor={`${product}-height`}
                 className="block text-sm font-medium text-slate-700 mb-1"
               >
-                {heightLabel}
+                {heightLabel ?? t('forms.order.height')}
               </label>
               <input
                 id={`${product}-height`}
@@ -377,7 +351,7 @@ export function ProductOrderForm({
                 max={2000}
                 step={1}
                 required
-                placeholder="на пр. 250"
+                placeholder={t('forms.order.heightPlaceholder')}
                 className={inputClassName}
               />
             </div>
@@ -398,7 +372,7 @@ export function ProductOrderForm({
               htmlFor={`${product}-name`}
               className="block text-sm font-medium text-slate-700 mb-1"
             >
-              Име и презиме
+              {t('forms.order.name')}
             </label>
             <input
               id={`${product}-name`}
@@ -413,14 +387,14 @@ export function ProductOrderForm({
               htmlFor={`${product}-phone`}
               className="block text-sm font-medium text-slate-700 mb-1"
             >
-              Телефон
+              {t('forms.order.phone')}
             </label>
             <input
               id={`${product}-phone`}
               name="phone"
               type="tel"
               required
-              placeholder="07X XXX XXX"
+              placeholder={t('forms.order.phonePlaceholder')}
               className={inputClassName}
             />
           </div>
@@ -431,7 +405,7 @@ export function ProductOrderForm({
             htmlFor={`${product}-email`}
             className="block text-sm font-medium text-slate-700 mb-1"
           >
-            Email
+            {t('forms.order.email')}
           </label>
           <input
             id={`${product}-email`}
@@ -446,6 +420,8 @@ export function ProductOrderForm({
           id={`${product}-city`}
           value={city}
           onChange={setCity}
+          label={t('forms.order.city')}
+          placeholder={t('forms.order.cityPlaceholder')}
           inputClassName={inputClassName}
         />
 
@@ -454,21 +430,21 @@ export function ProductOrderForm({
             htmlFor={`${product}-notes`}
             className="block text-sm font-medium text-slate-700 mb-1"
           >
-            Забелешка (опционално)
+            {t('forms.order.notes')}
           </label>
           <textarea
             id={`${product}-notes`}
             name="notes"
             rows={3}
             className={cn(inputClassName, 'resize-none')}
-            placeholder="Дополнителни барања или прашања..."
+            placeholder={t('forms.order.notesPlaceholder')}
           />
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
           {product === 'motori-porti' && motorTotal !== null && (
             <p className="text-right text-base font-semibold text-slate-800 sm:mr-1">
-              Вкупно:{' '}
+              {t('forms.order.motoriPorti.total')}{' '}
               <span className="text-sky-700">{formatEur(motorTotal)}</span>
             </p>
           )}
@@ -477,7 +453,9 @@ export function ProductOrderForm({
             disabled={status === 'loading' || !canSubmit}
             className="btn-main-dark w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {SUBMIT_LABEL[formMode]}
+            {formMode === 'order'
+              ? t('forms.order.submitOrder')
+              : t('forms.order.submitQuote')}
           </button>
         </div>
 
@@ -499,8 +477,14 @@ export function ProductOrderForm({
       <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{copy.title}</DialogTitle>
-            <DialogDescription>{copy.description}</DialogDescription>
+            <DialogTitle>
+              {t(`forms.order.review${formMode === 'order' ? 'Order' : 'Quote'}.title`)}
+            </DialogTitle>
+            <DialogDescription>
+              {t(
+                `forms.order.review${formMode === 'order' ? 'Order' : 'Quote'}.description`,
+              )}
+            </DialogDescription>
           </DialogHeader>
 
           <dl className="divide-y divide-slate-100 rounded-lg border border-slate-200">
@@ -517,7 +501,7 @@ export function ProductOrderForm({
 
           {reviewTotal !== null && (
             <p className="text-right text-base font-semibold text-slate-900">
-              Вкупно:{' '}
+              {t('forms.order.motoriPorti.total')}{' '}
               <span className="text-sky-700">{formatEur(reviewTotal)}</span>
             </p>
           )}
@@ -528,7 +512,7 @@ export function ProductOrderForm({
               onClick={() => setReviewOpen(false)}
               className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
             >
-              Назад
+              {t('forms.order.back')}
             </button>
             <button
               type="button"
@@ -536,7 +520,11 @@ export function ProductOrderForm({
               disabled={status === 'loading'}
               className="btn-main-dark disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {status === 'loading' ? 'Се испраќа...' : copy.confirm}
+              {status === 'loading'
+                ? t('forms.order.submitting')
+                : t(
+                    `forms.order.review${formMode === 'order' ? 'Order' : 'Quote'}.confirm`,
+                  )}
             </button>
           </DialogFooter>
         </DialogContent>
@@ -552,14 +540,24 @@ export function ProductOrderSection({
   widthLabel,
   heightLabel,
 }: Props) {
+  const t = useTranslations();
   const isFixedPrice = productHasFixedPrice(product);
+
+  const sectionDescriptionKey =
+    product === 'pergoli'
+      ? 'forms.order.descriptionPergoli'
+      : product === 'zavesi'
+        ? 'forms.order.descriptionZavesi'
+        : product === 'motori-porti'
+          ? 'forms.order.descriptionMotoriPorti'
+          : 'forms.order.descriptionVrati';
 
   return (
     <section className="mt-8 mb-6 rounded-xl border border-slate-200 bg-slate-50 p-5 md:p-8">
       <h2 className="desc-title text-lg md:text-xl mb-1">
-        {isFixedPrice ? SECTION_TITLE.order : SECTION_TITLE.quote}
+        {isFixedPrice ? t('forms.order.titleOrder') : t('forms.order.titleQuote')}
       </h2>
-      <p className="text-slate-600 text-sm mb-6">{SECTION_COPY[product]}</p>
+      <p className="text-slate-600 text-sm mb-6">{t(sectionDescriptionKey)}</p>
       <ProductOrderForm
         product={product}
         motorVariant={motorVariant}

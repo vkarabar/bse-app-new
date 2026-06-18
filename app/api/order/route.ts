@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getLocale } from '@/lib/i18n/get-locale';
+import { getDictionary, createTranslator } from '@/lib/i18n/get-dictionary';
 import { validateOrderPayload } from '@/lib/orders';
 import { sendOrderEmail } from '@/lib/send-order-email';
 import { getEmailErrorMessage } from '@/lib/smtp';
@@ -7,8 +9,20 @@ export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const result = validateOrderPayload(body);
+    const locale = await getLocale();
+    const t = createTranslator(getDictionary(locale));
+
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: t('orders.validation.invalidData') },
+        { status: 400 },
+      );
+    }
+
+    const result = validateOrderPayload(body, t);
 
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: 400 });
@@ -18,7 +32,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      message: 'Нарачката е успешно испратена. Ќе ве контактираме наскоро.',
+      message: t('orders.success'),
     });
   } catch (error) {
     console.error('Order email failed:', error);

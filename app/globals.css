@@ -6,7 +6,14 @@ html,
 body,
 :root {
   @apply h-full;
+  --site-header-offset: 4rem;
   /* @apply bg-slate-50; */
+}
+
+@media (min-width: 768px) {
+  :root {
+    --site-header-offset: 0px;
+  }
 }
 
 .containerr {
@@ -46,6 +53,14 @@ body,
 }
 .btn-done {
   @apply px-5 pr-4 py-2 bg-sky-500 text-slate-50 rounded-full my-2 hover:bg-sky-600 transition-all;
+}
+
+.wizard-btn-back {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40;
+}
+
+.wizard-btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-sky-600 bg-sky-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-sky-700 hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-50;
 }
 
 button[data-testid='flowbite-dropdown-target'] {
@@ -115,5 +130,60 @@ button[data-testid='flowbite-dropdown-target'] {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 35s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-fade-up {
+  animation: fade-up 0.7s ease-out both;
+}
+
+.hero-fade-up-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.hero-fade-up-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.hero-fade-up-delay-3 {
+  animation-delay: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-up,
+  .hero-fade-up-delay-1,
+  .hero-fade-up-delay-2,
+  .hero-fade-up-delay-3 {
+    animation: none;
   }
 }

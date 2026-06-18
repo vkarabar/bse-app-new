@@ -2,20 +2,22 @@
 
 import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
-import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { LocalizedLink } from './localized-link';
+import { stripLocalePrefix } from '@/lib/i18n/locales';
 
 type Props = {
   label: string;
   href: string;
   iconSrc: string;
-  onClick: any;
+  onClick: () => void;
 };
 
 export const SidebarItem = ({ label, href, iconSrc, onClick }: Props) => {
   const pathname = usePathname();
-  const active = pathname === href;
+  const { pathname: strippedPathname } = stripLocalePrefix(pathname);
+  const active = strippedPathname === href;
 
   return (
     <Button
@@ -24,13 +26,13 @@ export const SidebarItem = ({ label, href, iconSrc, onClick }: Props) => {
       asChild
       onClick={onClick}
     >
-      <Link href={href}>
+      <LocalizedLink href={href}>
         <div className="flex items-center gap-2">
           <Image
             className={cn(
               'fill-slate-50 text-slate-50 outline-slate-50 stroke-slate-50',
               active &&
-                'fill-sky-400 text-sky-400 outline-sky-400 stroke-sky-400'
+                'fill-sky-400 text-sky-400 outline-sky-400 stroke-sky-400',
             )}
             src={iconSrc}
             width={30}
@@ -39,7 +41,7 @@ export const SidebarItem = ({ label, href, iconSrc, onClick }: Props) => {
           />
           <p>{label}</p>
         </div>
-      </Link>
+      </LocalizedLink>
     </Button>
   );
 };

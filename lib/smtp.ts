@@ -49,6 +49,26 @@ export function getNotificationEmail() {
   );
 }
 
+function parseEmailList(value: string | undefined) {
+  if (!value) return [];
+
+  return value
+    .split(',')
+    .map((email) => email.trim())
+    .filter(Boolean);
+}
+
+export function getNotificationEmails(): string[] {
+  const primary = getNotificationEmail();
+  if (!primary) return [];
+
+  const additional = parseEmailList(
+    readEnv('NOTIFICATION_EMAIL_CC') ?? readEnv('ORDER_EMAIL_CC'),
+  );
+
+  return [...new Set([primary, ...additional])];
+}
+
 export function escapeHtml(value: string) {
   return value
     .replace(/&/g, '&amp;')

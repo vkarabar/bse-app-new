@@ -5,217 +5,185 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import Image from 'next/image';
 import { ProductColorsSection } from '@/components/color-swatches';
-import { ProductOrderSection } from '@/components/product-order-form';
+import { GarageDoorOrderWizard } from '@/components/garage-door-order-wizard';
+import { getServerTranslations } from '@/lib/i18n/get-server-translations';
 import { VRATI_COLORS } from '@/lib/product-colors';
+import Image from 'next/image';
 
-const slikiVrati = [
-  {
-    id: 1,
-    title: 'Гаражна врата 1',
-    imageSrc: '/vrati/vrata4.jpg',
-  },
-  {
-    id: 2,
-    title: 'Гаражна врата 2',
-    imageSrc: '/vrati/vrata3.jpg',
-  },
-  {
-    id: 3,
-    title: 'Гаражна врата 3',
-    imageSrc: '/vrati/vrata2.jpg',
-  },
-  {
-    id: 4,
-    title: 'Гаражна врата 4',
-    imageSrc: '/vrati/vrata1.jpg',
-  },
-  {
-    id: 5,
-    title: 'Гаражна врата 5',
-    imageSrc: '/vrati/vrata5.jpg',
-  },
-];
+function BoldParagraph({
+  beforeBold,
+  bold,
+  afterBold,
+}: {
+  beforeBold?: string;
+  bold: string;
+  afterBold?: string;
+}) {
+  return (
+    <p className="text-slate-900">
+      {beforeBold}
+      <span className="font-semibold">{bold}</span>
+      {afterBold}
+    </p>
+  );
+}
 
-const VratiPage = () => {
+function PlaceholderParagraph({
+  text,
+  bold,
+}: {
+  text: string;
+  bold: string;
+}) {
+  const [before = '', after = ''] = text.split('{bold}');
+  return (
+    <p className="text-slate-900">
+      {before}
+      <span className="font-semibold">{bold}</span>
+      {after}
+    </p>
+  );
+}
+
+const VratiPage = async () => {
+  const { t } = await getServerTranslations();
+
+  const slikiVrati = [1, 2, 3, 4, 5].map((id, index) => ({
+    id,
+    title: t('home.slider.garageDoorNumbered', { number: index + 1 }),
+    imageSrc: `/vrati/vrata${[4, 3, 2, 1, 5][index]}.jpg`,
+  }));
+
   return (
     <div>
       <h1 className="section-title text-xl border-b-4 !mb-4 !md:mb-2">
-        Роло Гаражни врати
+        {t('productPages.vrati.title')}
       </h1>
-      <div className="mb-3 md:grid md:grid-cols-2 items-center px-1 my-6 md:my-8">
+      <div className="mb-3 md:grid md:grid-cols-2 items-center px-1 my-6 md:mt-0 md:mb-8">
         <div className="md:mr-12 mb-6 md:col-start-2 md:hidden">
           <Image
             src="/vrati/vrata1.jpg"
-            alt="Гаражна врата"
+            alt={t('common.images.garageDoor')}
             width={500}
             height={290}
             className="rounded-2xl"
           />
         </div>
         <div className="hidden md:block">
-          <Slajder
-            sliki={slikiVrati}
-            time={3000}
-          />
+          <Slajder sliki={slikiVrati} time={3000} />
         </div>
         <div className="md:mr-12 space-y-4 md:row-start-1">
-          <p className="text-slate-900">
-            <span className="font-semibold">Роло гаражните врати</span> се
-            системи кои имаат можност лесно да се отвораат и затвораат со
-            далечински управувач или преку телефон.
-          </p>
-          <p className="text-slate-900">
-            Овозможуваат <span className="font-semibold">висока заштита</span>{' '}
-            од неповолни надворешни влијанија, отпорни се корозија, силен ветер
-            и на сите лоши временски услови.
-          </p>
-          <p className="text-slate-900">
-            Целосно се произведени од{' '}
-            <span className="font-semibold">висококвалитетни материјали</span>{' '}
-            со што Ви гарантираме долготрајност.
-          </p>
+          <BoldParagraph
+            bold={t('productPages.vrati.intro.p1bold')}
+            afterBold={` ${t('productPages.vrati.intro.p1')}`}
+          />
+          <PlaceholderParagraph
+            text={t('productPages.vrati.intro.p2')}
+            bold={t('productPages.vrati.intro.p2bold')}
+          />
+          <PlaceholderParagraph
+            text={t('productPages.vrati.intro.p3')}
+            bold={t('productPages.vrati.intro.p3bold')}
+          />
         </div>
       </div>
 
-      <div className="h-[1px] w-full bg-slate-200 mt-6 mb-5 md:my-8"></div>
-
-      {/* DEL 1 */}
+      <div className="h-[1px] w-full bg-slate-200 mt-6 mb-5 md:my-8" />
 
       <h2 className="uppercase text-sky-500 font-semibold text-center mb-2">
-        Предности
+        {t('common.benefits')}
       </h2>
 
       <div className="grid lg:grid-cols-2 gap-y-4 lg:gap-y-6 lg:gap-x-6">
         <div className="border-slate-300 border rounded-xl px-5 py-4 hover:bg-slate-100 hover:cursor-default lg:px-8 lg:py-7">
           <div className="flex items-center gap-3 mb-1">
-            <Image
-              src="/badge.svg"
-              width={32}
-              height={32}
-              alt="badge"
-            />
-            <h2 className="desc-title col-span-2">Удобност и безбедност</h2>
+            <Image src="/badge.svg" width={32} height={32} alt="" />
+            <h2 className="desc-title col-span-2">
+              {t('productPages.vrati.benefits.comfortSafety.title')}
+            </h2>
           </div>
           <p className="desc">
-            Современо решение за секоја гаража се роло гаражни врати. Нудат
-            заштита на вашата гаража/објект или дом од неповолни временски
-            услови
+            {t('productPages.vrati.benefits.comfortSafety.text')}
           </p>
         </div>
         <div className="border-slate-300 border rounded-xl px-5 py-4 hover:bg-slate-100 hover:cursor-default lg:px-8 lg:py-7">
           <div className="flex items-center gap-3 mb-1">
-            <Image
-              src="/award.svg"
-              width={32}
-              height={32}
-              alt="badge"
-            />
-            <h2 className="desc-title">Kвалитет и издржливост</h2>
+            <Image src="/award.svg" width={32} height={32} alt="" />
+            <h2 className="desc-title">
+              {t('productPages.vrati.benefits.quality.title')}
+            </h2>
           </div>
-
+          <p className="desc">{t('productPages.vrati.benefits.quality.text')}</p>
+        </div>
+        <div className="border-slate-300 border rounded-xl px-5 py-4 hover:bg-slate-100 hover:cursor-default lg:px-8 lg:py-7">
+          <div className="flex items-center gap-3 mb-1">
+            <Image src="/checkplus.svg" width={32} height={32} alt="" />
+            <h2 className="desc-title">
+              {t('productPages.vrati.benefits.spaceEfficiency.title')}
+            </h2>
+          </div>
           <p className="desc">
-            Отпорни на врнежи, високи температурни разлики и корозија,
-            благодарение на висококвалитетните алуминиумски ламели.
+            {t('productPages.vrati.benefits.spaceEfficiency.text')}
           </p>
         </div>
         <div className="border-slate-300 border rounded-xl px-5 py-4 hover:bg-slate-100 hover:cursor-default lg:px-8 lg:py-7">
           <div className="flex items-center gap-3 mb-1">
-            <Image
-              src="/checkplus.svg"
-              width={32}
-              height={32}
-              alt="badge"
-            />
-            <h2 className="desc-title">Мала просторна зафатеност</h2>
+            <Image src="/swatchbook.svg" width={32} height={32} alt="" />
+            <h2 className="desc-title">
+              {t('productPages.vrati.benefits.colorRange.title')}
+            </h2>
           </div>
-
-          <p className="desc">
-            Роло гаражните врати се идеални за места каде што е потребна
-            ефективна искористеност на таванот.
-          </p>
-        </div>
-        <div className="border-slate-300 border rounded-xl px-5 py-4 hover:bg-slate-100 hover:cursor-default lg:px-8 lg:py-7">
-          <div className="flex items-center gap-3 mb-1">
-            <Image
-              src="/swatchbook.svg"
-              width={32}
-              height={32}
-              alt="badge"
-            />
-            <h2 className="desc-title">Широк спектар на бои</h2>
-          </div>
-          <p className="desc">
-            Голем избор на бои од кои може да изберете во зависност од вашите
-            потреби.
-          </p>
+          <p className="desc">{t('productPages.vrati.benefits.colorRange.text')}</p>
         </div>
       </div>
 
-      <h2 className="md:hidden h-[1px] bg-slate-200 mt-8 mb-6"></h2>
-
-      {/* DEL 2 */}
+      <h2 className="md:hidden h-[1px] bg-slate-200 mt-8 mb-6" />
 
       <h2 className="md:hidden uppercase text-sky-500 font-semibold text-center mb-3">
-        Галерија
+        {t('common.gallery')}
       </h2>
 
       <div className="md:hidden">
-        <Slajder
-          sliki={slikiVrati}
-          time={3000}
-        />
+        <Slajder sliki={slikiVrati} time={3000} />
       </div>
 
-      {/*  */}
-
-      <div className="h-[1px] w-full bg-slate-200 mt-10 md:my-8"></div>
+      <div className="h-[1px] w-full bg-slate-200 mt-10 md:my-8" />
 
       <div className="mt-4 mb-6 space-y-4 md:grid md:grid-cols-2 gap-6">
         <ProductColorsSection colors={VRATI_COLORS} />
-
-        {/*  */}
-
-        <div className="h-[1px] w-full bg-slate-200 mt-8 mb-5 md:my-5 md:hidden"></div>
-
-        {/*  */}
-        <Accordion
-          type="single"
-          collapsible
-        >
+        <div className="h-[1px] w-full bg-slate-200 mt-8 mb-5 md:my-5 md:hidden" />
+        <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger className="text-left">
-              Колку време трае гаранцијата?
+              {t('common.faq.warrantyDuration.question')}
             </AccordionTrigger>
             <AccordionContent>
-              Гаражните врати и компонентите имаат гаранција со времетраење од 3
-              години.
+              {t('productPages.vrati.faq.warranty.answer')}
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
             <AccordionTrigger className="text-left">
-              Дали материјалите се отпорни на корозија?
+              {t('common.faq.corrosionResistance.question')}
             </AccordionTrigger>
             <AccordionContent>
-              Сите компоненти се изработени од висококвалитетни материјали
-              отпорни на корозија.
+              {t('common.faq.corrosionResistance.answer')}
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-3">
             <AccordionTrigger className="text-left">
-              Колку се чека за монтажа по нарачка?
+              {t('common.faq.installationWait.question')}
             </AccordionTrigger>
             <AccordionContent>
-              Во просек по извршена нарачка монтажата се врши за 2-3 работни
-              дена.
+              {t('common.faq.installationWait.answer')}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        {/* <div className="h-[1px] w-full bg-slate-300 my-6 md:hidden"></div> */}
       </div>
 
-      <ProductOrderSection product="vrati" colors={VRATI_COLORS} />
+      <section className="mt-8 mb-6">
+        <GarageDoorOrderWizard />
+      </section>
     </div>
   );
 };

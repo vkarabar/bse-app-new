@@ -1,37 +1,61 @@
+import { getDictionary, createTranslator } from '@/lib/i18n/get-dictionary';
 import {
   formatMotoriPortiSummary,
+  formatOrderDimensionLines,
   getMotoriPortiTotal,
-  getPergolaDimensionLabel,
-  ORDER_PRODUCT_LABELS,
   type OrderPayload,
 } from '@/lib/orders';
 import { formatEur } from '@/lib/order-pricing';
-import { escapeHtml, getNotificationEmail, getTransporter } from '@/lib/smtp';
+import {
+  escapeHtml,
+  getNotificationEmail,
+  getNotificationEmails,
+  getTransporter,
+} from '@/lib/smtp';
 
-function formatDimensions(order: OrderPayload): string {
-  if (order.product === 'pergoli' && order.dimension) {
-    return getPergolaDimensionLabel(order.dimension);
-  }
-
-  if (order.width && order.height) {
-    return `${order.width} × ${order.height} см`;
-  }
-
-  return '—';
+function getOrderTranslator() {
+  return createTranslator(getDictionary('mk'));
 }
 
 function buildOrderDetailsLines(order: OrderPayload): string[] {
+  const t = getOrderTranslator();
+
   if (order.product === 'motori-porti') {
-    return formatMotoriPortiSummary(order).split('\n').filter(Boolean);
+    return formatMotoriPortiSummary(order, t).split('\n').filter(Boolean);
   }
 
-  const lines: string[] = [`Димензии: ${formatDimensions(order)}`];
-  if (order.color) lines.push(`Боја: ${order.color}`);
+  const lines = [...formatOrderDimensionLines(order, t)];
+  if (order.color) {
+    lines.push(`${t('orders.reviewLabels.color')}: ${t(`colors.${order.color}`)}`);
+  }
+  if (order.mountingRequested !== undefined) {
+    lines.push(
+      `${t('orders.reviewLabels.mountingRequested')}: ${order.mountingRequested ? t('wizard.garageDoor.summary.yes') : t('wizard.garageDoor.summary.no')}`,
+    );
+  }
+  if (order.installTimeline) {
+    lines.push(
+      `${t('orders.reviewLabels.installTimeline')}: ${t(`wizard.garageDoor.contact.timeline.${order.installTimeline}`)}`,
+    );
+  }
+  if (
+    order.remoteCount !== undefined &&
+    order.motorRequested !== false
+  ) {
+    lines.push(
+      `${t('orders.reviewLabels.remoteCount')}: ${order.remoteCount}`,
+    );
+  }
   return lines;
 }
 
+function getProductLabel(order: OrderPayload) {
+  const t = getOrderTranslator();
+  return t(`orders.productLabels.${order.product}`);
+}
+
 function buildAdminEmailHtml(order: OrderPayload) {
-  const productLabel = ORDER_PRODUCT_LABELS[order.product];
+  const productLabel = getProductLabel(order);
 
   const row = (label: string, value: string) =>
     `<tr><td><strong>${label}</strong></td><td>${escapeHtml(value)}</td></tr>`;
@@ -55,7 +79,7 @@ function buildAdminEmailHtml(order: OrderPayload) {
 }
 
 function buildCustomerConfirmationHtml(order: OrderPayload) {
-  const productLabel = ORDER_PRODUCT_LABELS[order.product];
+  const productLabel = getProductLabel(order);
   const total = getMotoriPortiTotal(order);
 
   const row = (label: string, value: string) =>
@@ -97,7 +121,7 @@ function buildCustomerConfirmationHtml(order: OrderPayload) {
 }
 
 function buildCustomerConfirmationText(order: OrderPayload) {
-  const productLabel = ORDER_PRODUCT_LABELS[order.product];
+  const productLabel = getProductLabel(order);
   const total = getMotoriPortiTotal(order);
 
   const lines = [
@@ -136,17 +160,17 @@ function buildCustomerConfirmationText(order: OrderPayload) {
 }
 
 async function sendOrderNotificationToBusiness(order: OrderPayload) {
-  const to = getNotificationEmail();
-  if (!to) {
+  const recipients = getNotificationEmails();
+  if (recipients.length === 0) {
     throw new Error('ORDER_EMAIL or SMTP_USER must be set in .env');
   }
 
   const transporter = getTransporter();
-  const productLabel = ORDER_PRODUCT_LABELS[order.product];
+  const productLabel = getProductLabel(order);
 
   await transporter.sendMail({
     from: `"BSE Web Нарачки" <${process.env.SMTP_USER}>`,
-    to,
+    to: recipients,
     replyTo: order.email,
     subject: `Нова нарачка: ${productLabel} — ${order.name}`,
     html: buildAdminEmailHtml(order),
@@ -166,7 +190,7 @@ async function sendOrderNotificationToBusiness(order: OrderPayload) {
 
 async function sendOrderConfirmationToCustomer(order: OrderPayload) {
   const transporter = getTransporter();
-  const productLabel = ORDER_PRODUCT_LABELS[order.product];
+  const productLabel = getProductLabel(order);
   const businessEmail = getNotificationEmail() ?? process.env.SMTP_USER;
 
   await transporter.sendMail({

@@ -1,61 +1,23 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import { MotoriPortiProductPage } from '@/components/motori-porti-product-page';
-import { Metadata } from 'next';
-import Image from 'next/image';
-import {
-  MOTORI_PORTI_HUB,
-  getMotorPageData,
-} from '@/lib/motori-porti-data';
+import { getServerTranslations } from '@/lib/i18n/get-server-translations';
+import { getMotorPageData } from '@/lib/motori-porti-data';
+import type { Metadata } from 'next';
 
-const data = getMotorPageData('spanish');
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerTranslations();
+  const data = getMotorPageData('spanish', t);
 
-export const metadata: Metadata = {
-  title: `${data.title} | БСЕ Компани`,
-  description: data.metaDescription,
-};
+  return {
+    title: `${data.title} | ${t('metadata.siteName')}`,
+    description: data.metaDescription,
+  };
+}
 
-const MotoriPortiSpanishPage = () => {
-  return (
-    <div className="max-w-[1056px] mx-auto px-4 pb-8">
-      <Breadcrumb className="mt-3 mb-4">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">
-              <Image
-                src="/homepage-2.svg"
-                alt="Homepage icon"
-                width={20}
-                height={20}
-              />
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/proizvodi">Производи</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={MOTORI_PORTI_HUB.href}>
-              {MOTORI_PORTI_HUB.label}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{data.breadcrumb}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+const MotoriPortiSpanishPage = async () => {
+  const { t } = await getServerTranslations();
+  const data = getMotorPageData('spanish', t);
 
-      <MotoriPortiProductPage data={data} />
-    </div>
-  );
+  return <MotoriPortiProductPage data={data} variant="spanish" />;
 };
 
 export default MotoriPortiSpanishPage;

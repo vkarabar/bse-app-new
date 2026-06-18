@@ -1,19 +1,29 @@
 import Image from 'next/image';
 import { MobileSidebar } from './mobile-sidebar';
-import Link from 'next/link';
+import { LocaleSwitcher } from './locale-switcher';
+import { LocalizedLink } from './localized-link';
 
 export const MobileHeader = () => {
   return (
-    <nav className="md:hidden px-6 h-[60px] flex items-center justify-between bg-slate-800 fixed top-0 w-full z-50">
-      <Link href="/">
+    <nav className="md:hidden px-4 h-16 grid grid-cols-3 items-center bg-slate-800 fixed top-0 w-full z-50">
+      <div className="justify-self-start">
+        <LocaleSwitcher compact />
+      </div>
+      <LocalizedLink
+        href="/"
+        className="justify-self-center"
+      >
         <Image
           src="/BSE_NEW.svg"
-          width={50}
-          height={50}
+          width={56}
+          height={56}
           alt="logo"
+          className="mt-[2px]"
         />
-      </Link>
-      <MobileSidebar />
+      </LocalizedLink>
+      <div className="justify-self-end mt-1.5">
+        <MobileSidebar />
+      </div>
     </nav>
   );
 };

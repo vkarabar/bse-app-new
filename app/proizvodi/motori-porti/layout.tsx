@@ -1,17 +1,26 @@
-import { Metadata } from 'next';
-import { MOTORI_PORTI_HUB } from '@/lib/motori-porti-data';
-
-export const metadata: Metadata = {
-  title: `${MOTORI_PORTI_HUB.label} | БСЕ Компани`,
-  description: MOTORI_PORTI_HUB.metaDescription,
-};
+import { ProductBreadcrumb } from '@/components/product-breadcrumb';
+import { getServerTranslations } from '@/lib/i18n/get-server-translations';
+import type { Metadata } from 'next';
 
 type Props = {
   children: React.ReactNode;
 };
 
-const MotoriPortiLayout = ({ children }: Props) => {
-  return children;
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerTranslations();
+  return {
+    title: t('metadata.motoriPorti.title'),
+    description: t('metadata.motoriPorti.description'),
+  };
+}
+
+const MotoriPortiLayout = async ({ children }: Props) => {
+  return (
+    <div className="max-w-[1056px] mx-auto px-4 md:pt-8">
+      <ProductBreadcrumb productKey="motoriPorti" />
+      {children}
+    </div>
+  );
 };
 
 export default MotoriPortiLayout;

@@ -1,0 +1,860 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "contact": "Contact",
+    "products": "Products",
+    "allProducts": "All Products",
+    "garageDoors": "Garage Doors",
+    "slidingGateMotors": "Sliding Gate Motors",
+    "pergolas": "Aluminum Pergolas",
+    "pvcCurtains": "PVC Magnetic Curtains",
+    "wifiControllers": "Wi-Fi Controllers",
+    "garageDoorMotors": "Garage Door Motors",
+    "components": "Components"
+  },
+  "footer": {
+    "copyright": "© {year} BSE Kompani, all rights reserved.",
+    "contactLabel": "Contact:",
+    "contactForm": "Contact Form"
+  },
+  "callBar": {
+    "quote": "Quote",
+    "requestQuote": "Request a quote"
+  },
+  "contact": {
+    "title": "Contact",
+    "intro": "Have a question, need a quote, or want to schedule an installation? Fill out the form and we will get back to you soon.",
+    "phone": "Phone",
+    "call": "Call us",
+    "callUs": "Call us",
+    "whatsapp": "WhatsApp",
+    "messageWhatsApp": "Message us on WhatsApp",
+    "whatsappPrefill": "Hello, I would like to get more information.\n\nWebsite: {website}\nPage: {page}",
+    "email": "Email",
+    "formTitle": "Send a Message",
+    "formSubtitle": "You will receive a reply via email or phone.",
+    "name": "Full Name",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "submit": "Send Message",
+    "submitting": "Sending...",
+    "errorGeneric": "An error occurred.",
+    "errorRetry": "An error occurred. Please try again.",
+    "errorServer": "The server returned an unexpected response. Please try again or call us directly."
+  },
+  "metadata": {
+    "siteName": "BSE Kompani",
+    "home": {
+      "title": "BSE Kompani",
+      "description": "BSE Kompani - Manufacturing and installation of roll-up garage doors. Sales of sliding gate motors. Manufacturing and installation of aluminum pergolas."
+    },
+    "about": {
+      "title": "About Us | BSE Kompani",
+      "description": "BSE Kompani has been operating since 2013 and from the very beginning has been focused on providing quality services in the industry while keeping prices low."
+    },
+    "contact": {
+      "title": "Contact | BSE Kompani",
+      "description": "Contact BSE Kompani — phone, email, or contact form for quotes and inquiries."
+    },
+    "naracaj": {
+      "title": "Request a Quote | BSE Kompani",
+      "description": "Choose a product and configure your order — garage doors, pergolas, PVC curtains, motors, and more."
+    },
+    "products": {
+      "title": "Products | BSE Kompani",
+      "description": "BSE Kompani has been operating since 2013 and from the very beginning has been focused on providing quality services in the industry while keeping prices low."
+    },
+    "vrati": { "title": "Garage Doors | BSE Kompani", "description": "BSE Kompani - Roll-up garage doors, manufacturing and installation." },
+    "pergoli": { "title": "Aluminum Pergolas | BSE Kompani", "description": "BSE Kompani - aluminum pergolas, manufacturing and installation." },
+    "zavesi": { "title": "PVC Magnetic Curtains | BSE Kompani", "description": "BSE Kompani - PVC magnetic curtains." },
+    "kontroleri": { "title": "Wi-Fi Controllers | BSE Kompani", "description": "BSE Kompani - Wi-Fi controllers." },
+    "motoriVrati": { "title": "Garage Door Motors | BSE Kompani", "description": "BSE Kompani - garage door motors." },
+    "motoriPorti": { "title": "Sliding Gate Motors | BSE Kompani", "description": "BSE Kompani - sliding gate motors." },
+    "komponenti": { "title": "Components | BSE Kompani", "description": "BSE Kompani - components for garage doors and gates." }
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "products": "Products",
+    "contact": "Contact",
+    "vrati": "Garage Doors",
+    "pergoli": "Aluminum Pergolas",
+    "zavesi": "PVC Magnetic Curtains",
+    "kontroleri": "Wi-Fi Controllers",
+    "motoriVrati": "Garage Door Motors",
+    "motoriPorti": "Sliding Gate Motors",
+    "komponenti": "Components",
+    "about": "About Us"
+  },
+  "common": {
+    "benefits": "Benefits",
+    "gallery": "Gallery",
+    "new": "New",
+    "faq": {
+      "warrantyDuration": { "question": "How long is the warranty?" },
+      "corrosionResistance": {
+        "question": "Are the materials corrosion-resistant?",
+        "answer": "All components are made from high-quality, corrosion-resistant materials."
+      },
+      "installationWait": {
+        "question": "How long is the wait for installation after ordering?",
+        "answer": "On average, installation is completed within 2–3 business days after the order is placed."
+      },
+      "qualityAndDurability": { "title": "Quality and Durability" },
+      "modelsAvailable": "2 models are available:"
+    },
+    "cta": {
+      "learnMore": "Learn More",
+      "viewOffer": "View Offer →",
+      "moreDetails": "More Details →"
+    },
+    "images": {
+      "garageDoor": "Garage Door",
+      "aluminumPergola": "Aluminum Pergola"
+    }
+  },
+  "home": {
+    "promoMarquee": {
+      "items": [
+        "Custom roll-up garage doors",
+        "Installation across Macedonia",
+        "Gate and garage motors",
+        "Aluminum pergolas",
+        "Free quote"
+      ]
+    },
+    "hero": {
+      "badge": "Garage door and automation specialists",
+      "title": "Quality, safety, and functionality for your home",
+      "subtitle": "{years} years in the market delivering top quality, the best and fastest service, and the lowest prices.",
+      "ctaQuote": "Request a Quote →",
+      "ctaProducts": "Browse Products",
+      "whoWeAre": "Who Are We?",
+      "experience": "{years} years in the market delivering top quality, the best and fastest service, and the lowest prices."
+    },
+    "stats": {
+      "experience": { "value": "{years}+", "label": "Years of Experience" },
+      "install": { "value": "2–3", "label": "Days to Install" },
+      "warranty": { "value": "3", "label": "Year Warranty" },
+      "coverage": { "value": "100%", "label": "Nationwide Install" }
+    },
+    "productGrid": {
+      "sectionLabel": "01.",
+      "title": "Our Products and Services",
+      "subtitle": "Complete solutions for garages, gates, pergolas, and automation — manufacturing, sales, and installation.",
+      "motoriVrati": {
+        "description": "Garage door automation with safety sensors and remote control."
+      },
+      "kontroleri": {
+        "description": "Wi-Fi controllers for remote operation of garage doors and gates."
+      }
+    },
+    "whyBse": {
+      "sectionLabel": "02.",
+      "title": "Why BSE Kompani?",
+      "subtitle": "We combine quality materials, professional installation, and fast service — from the first quote to project completion.",
+      "warrantySupport": {
+        "title": "Warranty and Support",
+        "text": "We provide product warranties and post-installation support for your peace of mind."
+      }
+    },
+    "offerings": {
+      "sectionLabel": "03.",
+      "title": "Explore More Details",
+      "vrati": {
+        "title": "Roll-Up Garage Doors",
+        "description": "Enhance the security of your garage with an aluminum roll-up garage door."
+      },
+      "motoriPorti": {
+        "title": "Sliding Gate Motors",
+        "description": "Spanish and Italian models — each with its own features and complete packages."
+      },
+      "zavesi": {
+        "title": "PVC Magnetic Curtains",
+        "description": "Magnetic curtains made from high-quality PVC material that offer excellent thermal insulation and protection."
+      },
+      "pergoli": {
+        "title": "Aluminum Pergolas",
+        "description": "Aluminum pergolas suitable for many uses that offer excellent protection from external elements."
+      }
+    },
+    "slider": {
+      "garageDoor": "Garage Door",
+      "garageDoorNumbered": "Garage Door {number}",
+      "slidingGateMotor": "Sliding Gate Motor",
+      "spanishGateMotor": "Spanish sliding gate motor",
+      "italianGateMotor": "Italian sliding gate motor",
+      "pvcMagneticCurtains": "PVC Magnetic Curtains",
+      "pergolaNumbered": "Pergola {number}"
+    },
+    "process": {
+      "sectionLabel": "04.",
+      "title": "How Does Ordering Work?",
+      "subtitle": "A clear process from first contact to completed installation — no hidden costs.",
+      "steps": {
+        "quote": {
+          "number": "01",
+          "duration": "Instant",
+          "title": "Request a Quote",
+          "description": "Contact us via form, phone, or email. Describe the product and dimensions you need.",
+          "note": "✓ Free · No obligation"
+        },
+        "consultation": {
+          "number": "02",
+          "duration": "1–2 days",
+          "title": "Consultation and Measurement",
+          "description": "Our team checks dimensions, installation conditions, and recommends the best solution for your space.",
+          "note": "✓ Professional advice"
+        },
+        "offer": {
+          "number": "03",
+          "duration": "Within 24 hours",
+          "title": "Official Quote",
+          "description": "You receive a clear quote with price, timeline, and scope — product, delivery, and installation.",
+          "note": "✓ Fixed price"
+        },
+        "install": {
+          "number": "04",
+          "duration": "2–3 days",
+          "title": "Installation and Handover",
+          "description": "After order confirmation, our team installs, tests, and delivers the solution ready for use.",
+          "note": "✓ 3-year warranty"
+        }
+      }
+    },
+    "faq": {
+      "sectionLabel": "06.",
+      "title": "Frequently Asked Questions",
+      "subtitle": "Don't see your question? Contact us — we're available for all the details.",
+      "installTime": {
+        "question": "How long is the wait for installation after ordering?",
+        "answer": "On average, installation is completed within 2–3 business days after the order is placed."
+      },
+      "warranty": {
+        "question": "How long is the warranty?",
+        "answer": "Garage doors and components come with a 3-year warranty."
+      },
+      "materials": {
+        "question": "Are the materials corrosion-resistant?",
+        "answer": "All components are made from high-quality, corrosion-resistant materials."
+      },
+      "coverage": {
+        "question": "Do you install across all of Macedonia?",
+        "answer": "Yes. We provide installation across Macedonia. Contact us for scheduling and location details."
+      }
+    },
+    "wizard": {
+      "sectionLabel": "05.",
+      "title": "Configure and Request a Quote",
+      "subtitle": "Go through 4 simple steps — choose options, enter dimensions, pick a color, and leave your contact details."
+    },
+    "gallery": {
+      "sectionLabel": "07.",
+      "title": "Completed Installations",
+      "subtitle": "Browse some of our completed projects — roll-up garage doors across Macedonia."
+    },
+    "finalCta": {
+      "title": "Ready for a Quote?",
+      "subtitle": "Contact us for a free quote — we'll respond soon, with no obligation.",
+      "bullets": [
+        "No obligation",
+        "Free quote",
+        "Nationwide install",
+        "3 yr. warranty"
+      ],
+      "ctaQuote": "Request a Quote →",
+      "ctaCall": "Call Now"
+    }
+  },
+  "naracajPage": {
+    "title": "Request a Quote",
+    "subtitle": "Choose a product to continue with configuration and a free quote.",
+    "backToProducts": "All products",
+    "chooseMotor": "Choose motor type"
+  },
+  "about": {
+    "whoWeAre": {
+      "title": "Who Are We?",
+      "paragraph1": "has been operating since 2013 and from the very beginning has been focused on providing quality services in the industry while keeping prices low.",
+      "paragraph2Goal": "Our goal",
+      "paragraph2": "is to enable everyone to secure their home or property with the highest-quality materials and modern technology."
+    },
+    "whyUs": {
+      "title": "Why Choose Us?",
+      "professionalTeam": {
+        "title": "Professional Team",
+        "text": "Our team specializes in manufacturing and installation and will ensure that every process is carried out to the highest standards!"
+      },
+      "qualityPriority": {
+        "title": "Quality Is Our Priority",
+        "text": "All materials and components used in the manufacturing of garage doors are of top quality."
+      },
+      "fastService": {
+        "title": "Fast and Quality Service",
+        "text": "We always offer express-fast service and quality throughout the manufacturing and installation of garage doors."
+      }
+    },
+    "stats": {
+      "title": "BSE Kompani in Numbers",
+      "satisfiedClients": "satisfied clients",
+      "installedDoors": "doors installed",
+      "yearsExperience": "years of experience"
+    },
+    "contact": {
+      "prompt": "Have a question or need a quote? Call us or send us a message."
+    }
+  },
+  "notFound": {
+    "message": "The page you requested does not exist.",
+    "backHome": "Back to Home"
+  },
+  "productPages": {
+    "vrati": {
+      "title": "Roll-Up Garage Doors",
+      "intro": {
+        "p1bold": "Roll-up garage doors",
+        "p1": "are systems that can be easily opened and closed with a remote control or via phone.",
+        "p2bold": "high protection",
+        "p2": "They provide {bold} from adverse external elements, and are resistant to corrosion, strong winds, and all harsh weather conditions.",
+        "p3bold": "high-quality materials",
+        "p3": "They are fully manufactured from {bold}, guaranteeing long-lasting durability."
+      },
+      "benefits": {
+        "comfortSafety": {
+          "title": "Comfort and Safety",
+          "text": "Roll-up garage doors are a modern solution for every garage. They offer protection for your garage, property, or home from adverse weather conditions."
+        },
+        "quality": {
+          "title": "Quality and Durability",
+          "text": "Resistant to rain, extreme temperature changes, and corrosion, thanks to high-quality aluminum slats."
+        },
+        "spaceEfficiency": {
+          "title": "Minimal Space Requirements",
+          "text": "Roll-up garage doors are ideal for places where efficient use of ceiling space is needed."
+        },
+        "colorRange": {
+          "title": "Wide Range of Colors",
+          "text": "A large selection of colors to choose from depending on your needs."
+        }
+      },
+      "faq": {
+        "warranty": { "answer": "Garage doors and components come with a 3-year warranty." }
+      }
+    },
+    "pergoli": {
+      "title": "Aluminum Pergolas",
+      "intro": {
+        "p1": "Aluminum pergolas are an excellent solution for stepping out of enclosed spaces and enjoying the outdoors while going about your daily activities.",
+        "p2": "You can open the pergola at any time if you want more light and airflow, or close it to block external elements.",
+        "p3": "They are made from high-quality materials that ensure a flawless appearance and high durability."
+      },
+      "benefits": {
+        "rainWindProtection": {
+          "title": "Protection from Rain and Wind",
+          "text": "Now you can enjoy every day in comfort without worrying about adverse weather conditions."
+        },
+        "quality": {
+          "text": "Resistant to rain, extreme temperature changes, and corrosion, thanks to high-quality materials."
+        },
+        "idealSpace": {
+          "title": "The Perfect Space for You",
+          "text": "Make the space your favorite spot to spend your time."
+        },
+        "ambientLighting": {
+          "title": "Ambient Lighting",
+          "text": "Create a great atmosphere by adjusting the ambient lighting to suit your needs."
+        }
+      },
+      "faq": {
+        "warranty": { "answer": "The warranty for pergolas is 3 years from the date of installation." }
+      }
+    },
+    "zavesi": {
+      "title": "PVC Magnetic Curtains",
+      "intro": {
+        "p1": "PVC magnetic curtains are an excellent solution if you want protection from dust, insects, wind, and other external elements. They also offer excellent thermal and sound insulation.",
+        "p2": "They fit perfectly in places where there is an increased need for protection from dust, insects, and wind.",
+        "p3": "They are made from high-quality materials that guarantee complete protection and high durability."
+      },
+      "benefits": {
+        "windDustProtection": {
+          "title": "Protection from Wind and Dust",
+          "text": "You will no longer feel unpleasant wind and the dust it carries. Magnetic curtains offer complete protection from wind and dust."
+        },
+        "insectProtection": {
+          "title": "Protection from Insects",
+          "text": "Insects are unpleasant and can be very harmful, especially in places where food is stored. You will no longer have to worry about that problem."
+        },
+        "anytimeProtection": {
+          "title": "Protection at Any Time",
+          "text": "The curtains are made from quality material, ensuring protection in all adverse external conditions at any time."
+        },
+        "colors": {
+          "title": "Various Colors",
+          "text": "Available in several different colors to choose from depending on your needs."
+        }
+      },
+      "faq": {
+        "thermalInsulation": {
+          "question": "Do the curtains provide thermal insulation?",
+          "answer": "Magnetic curtains limit airflow and offer excellent thermal insulation."
+        },
+        "extremeTemperatures": {
+          "question": "Are they resistant to extreme temperatures?",
+          "answer": "The curtains are made from high-quality materials resistant to extreme temperatures."
+        }
+      }
+    },
+    "kontroleri": {
+      "title": "Wi-Fi Controllers",
+      "intro": {
+        "p1": "Wi-Fi controllers are devices used for remote control of garage door or sliding gate motors.",
+        "p2": "To connect, you only need to establish a connection between the controller and your mobile device, enabling remote control."
+      },
+      "benefits": {
+        "easyToUse": {
+          "title": "Practical and Easy to Use",
+          "text": "Setting up the controllers is easy and straightforward, enabling quick and simple use."
+        }
+      },
+      "faq": {
+        "range": {
+          "question": "What is the range of the controller?",
+          "answer": "The controllers have an antenna with high-frequency signals that cover large distances."
+        }
+      }
+    },
+    "motoriVrati": {
+      "title": "Garage Door Motors",
+      "intro": {
+        "p1": "The motors are made from high-quality materials and to the highest standards.",
+        "p2": "High-performance motors have very high speed and come with built-in safety sensors."
+      },
+      "models": {
+        "standard": "Standard Motors",
+        "highPerformance": "High-Performance Motors"
+      },
+      "benefits": {
+        "highStandard": {
+          "title": "High Standard",
+          "text": "Garage door motors are manufactured in accordance with high standards."
+        },
+        "safetySensors": {
+          "title": "Safety Sensors",
+          "text": "The motors include safety sensors that activate when resistance is detected."
+        }
+      },
+      "faq": {
+        "warranty": { "answer": "The warranty on the motors is 3 years." }
+      }
+    },
+    "motoriPorti": {
+      "title": "Sliding Gate Motors",
+      "intro": {
+        "p1bold": "Ultra-fast",
+        "p1": "{bold} sliding gate motors with top performance.",
+        "p2bold": "fast and unobstructed",
+        "p2": "They enable {bold} opening and closing of sliding gates via remote control or mobile phone.",
+        "p3bold": "high-quality materials",
+        "p3": "They are fully manufactured from {bold}, guaranteeing long-lasting durability."
+      },
+      "benefits": {
+        "highSpeed": {
+          "title": "High Speed",
+          "text": "Sliding gate motors have high operating speed, enabling fast opening and closing."
+        },
+        "wifiControl": {
+          "title": "Wi-Fi Control",
+          "text": "You can control them anytime and from anywhere via your mobile device. All you need is to connect the device to the motor via Wi-Fi."
+        },
+        "topQuality": {
+          "title": "Top Quality",
+          "text": "The motors are made exclusively from high-quality materials."
+        }
+      },
+      "models": {
+        "capacity500": "Motor with capacity up to {weight}",
+        "capacity1000": "Motor with capacity up to {weight}"
+      },
+      "faq": {
+        "warranty": { "answer": "The motors come with a 1-year warranty." },
+        "rainResistant": {
+          "question": "Are they rain-resistant?",
+          "answer": "The motors are certified for rain resistance to IP standard."
+        }
+      }
+    },
+    "komponenti": {
+      "title": "Components",
+      "items": {
+        "motors": {
+          "title": "Motors",
+          "text": "High-speed motors that open your door in no time."
+        },
+        "axles": {
+          "title": "Axles",
+          "text": "Garage door axles with lengths up to 7m."
+        },
+        "slats": {
+          "title": "Slats",
+          "text": "Multiple types of slats for manufacturing garage doors."
+        },
+        "otherParts": {
+          "title": "Other Components",
+          "text": "We stock all components needed to manufacture the products in our range."
+        }
+      }
+    },
+    "motoriPortiHub": {
+      "title": "Sliding Gate Motors",
+      "metaDescription": "Spanish and Italian sliding gate motors — choose the model that fits your needs.",
+      "intro": "Choose a motor type — Spanish model with Wi-Fi or Italian OXYGEN complete packages, each with its own features."
+    },
+    "motoriSpanish": {
+      "navLabel": "Spanish Motors",
+      "title": "Spanish Sliding Gate Motors",
+      "metaDescription": "Ultra-fast Spanish sliding gate motor with Wi-Fi control — capacity up to 800 kg.",
+      "breadcrumb": "Spanish Motors",
+      "otherLinkLabel": "Italian Sliding Gate Motors",
+      "seeAlso": "Also see",
+      "imageAlt": "Spanish sliding gate motor",
+      "intro": {
+        "p1": "Ultra-fast Spanish sliding gate motors with top performance.",
+        "p2": "Enable fast and unobstructed opening and closing via remote control or mobile phone.",
+        "p3": "Fully manufactured from high-quality materials, guaranteeing long-lasting durability."
+      },
+      "models": {
+        "title": "Model:",
+        "item1": "Motor with capacity up to 800 kg"
+      },
+      "prosTitle": "Benefits",
+      "pros": {
+        "speed": {
+          "title": "Ultra-Fast Operation",
+          "text": "High operating speed — ideal when you use the gate frequently."
+        },
+        "wifi": {
+          "title": "Wi-Fi Control",
+          "text": "Control via mobile phone, no additional hardware required."
+        },
+        "capacity": {
+          "title": "High Capacity",
+          "text": "One model with capacity up to 800 kg — suitable for most sliding gates."
+        }
+      },
+      "faq": {
+        "warranty": { "answer": "The motors come with a 1-year warranty." },
+        "rainResistant": {
+          "question": "Are they rain-resistant?",
+          "answer": "The motors are certified for rain resistance to IP standard."
+        }
+      }
+    },
+    "motoriItalian": {
+      "navLabel": "Italian OXYGEN Motors",
+      "title": "Italian Sliding Gate Motors",
+      "metaDescription": "Italian OXYGEN sliding gate motors — complete package from €300 with control panel, remotes, photocells, and 4 m of rails.",
+      "breadcrumb": "Italian Motors",
+      "otherLinkLabel": "Spanish Sliding Gate Motors",
+      "seeAlso": "Also see",
+      "imageAlt": "Italian OXYGEN sliding gate motor",
+      "intro": {
+        "p1": "Italian OXYGEN motors — 100% Made in Italy with proven quality.",
+        "p2": "Complete package from €300 — motor with control panel, remotes, photocells, flasher, and 4 m of rails.",
+        "p3": "Quiet and stable operation, designed for gates up to 600 kg."
+      },
+      "models": {
+        "title": "Included in the €300 price:",
+        "item1": "1 motor + control panel",
+        "item2": "2 remote controls",
+        "item3": "2 photocells",
+        "item4": "1 flasher light",
+        "item5": "4 meters of rails"
+      },
+      "prosTitle": "Benefits",
+      "pros": {
+        "quality": {
+          "title": "Italian Quality",
+          "text": "Premium build and components — proven reliability on the European market."
+        },
+        "quiet": {
+          "title": "Quiet Operation",
+          "text": "Optimized mechanism — smooth opening and closing without unnecessary noise."
+        },
+        "complete": {
+          "title": "Complete Solution",
+          "text": "Everything needed for installation is in the package — fewer additional orders."
+        }
+      },
+      "faq": {
+        "warranty": { "answer": "The motors come with a 1-year warranty." },
+        "rainResistant": {
+          "question": "Are they rain-resistant?",
+          "answer": "The motors are certified for rain resistance to IP standard."
+        }
+      }
+    }
+  },
+  "colors": {
+    "chocolate": "Chocolate",
+    "gray": "Gray",
+    "anthracite": "Anthracite",
+    "white": "White",
+    "oak": "Oak",
+    "red": "Red",
+    "brown": "Brown",
+    "yellow": "Yellow",
+    "blue": "Blue"
+  },
+  "productSections": {
+    "colors": { "title": "The following colors are available:" }
+  },
+  "forms": {
+    "order": {
+      "title": "Request a Quote",
+      "descriptionVrati": "Enter dimensions and contact details — we will reply with a price and installation timeline.",
+      "descriptionPergoli": "Choose dimensions and color — we will reply with a price and installation timeline.",
+      "descriptionZavesi": "Enter dimensions and color — we will reply with a price and installation timeline.",
+      "descriptionMotoriPorti": "Choose options — prices are shown below. We will contact you to confirm.",
+      "titleQuote": "Request a Quote",
+      "titleOrder": "Place Order",
+      "submitQuote": "Request Quote",
+      "submitOrder": "Submit Order",
+      "back": "Back",
+      "reviewQuote": {
+        "title": "Review Request",
+        "description": "Check the details before submitting your request.",
+        "confirm": "Confirm Request"
+      },
+      "reviewOrder": {
+        "title": "Review Order",
+        "description": "Check the details before submitting your order.",
+        "confirm": "Confirm and Submit"
+      },
+      "motoriPorti": {
+        "packageLabel": "Package:",
+        "motorLabel": "Sliding gate motor:",
+        "includedTitle": "Included in the price:",
+        "mounting": "Installation",
+        "extraRailsOptional": "Extra rails [meters] (optional)",
+        "railsOptional": "Gate rails [meters] (optional)",
+        "includedRailsHint": "{meters} m of rails included in the package · {price} / additional meter",
+        "perMeterHint": "{price} / meter",
+        "extraRailsPlaceholder": "e.g. 2",
+        "railsPlaceholder": "e.g. 6",
+        "estimatedTotal": "Estimated total:",
+        "total": "Total:"
+      },
+      "dimensions": "Dimensions",
+      "width": "Width (cm)",
+      "height": "Height (cm)",
+      "widthPlaceholder": "e.g. 300",
+      "heightPlaceholder": "e.g. 250",
+      "color": "Color",
+      "selectColor": "Select a color",
+      "name": "Full Name",
+      "phone": "Phone",
+      "phonePlaceholder": "07X XXX XXX",
+      "email": "Email",
+      "city": "City (optional)",
+      "cityPlaceholder": "Search city...",
+      "notes": "Notes (optional)",
+      "notesPlaceholder": "Additional requirements or questions...",
+      "submit": "Submit Order",
+      "submitting": "Sending...",
+      "errorGeneric": "An error occurred.",
+      "errorRetry": "An error occurred. Please try again.",
+      "errorServer": "The server returned an unexpected response. Please try again or call us directly."
+    }
+  },
+  "orders": {
+    "success": "Your order was sent successfully. We will contact you soon.",
+    "productLabels": {
+      "vrati": "Roll-up garage door",
+      "pergoli": "Aluminum pergola",
+      "zavesi": "PVC magnetic curtain",
+      "motori-porti": "Sliding gate motor"
+    },
+    "reviewLabels": {
+      "product": "Product",
+      "dimensions": "Dimensions",
+      "width": "Width",
+      "height": "Height",
+      "color": "Color",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "city": "City",
+      "notes": "Notes",
+      "type": "Type",
+      "package": "Package",
+      "included": "Included",
+      "motor": "Motor",
+      "mounting": "Installation",
+      "extraRails": "Extra rails ({meters} m included)",
+      "gateRails": "Gate rails",
+      "total": "Total",
+      "motorRequested": "Motor",
+      "mountingRequested": "Installation",
+      "installTimeline": "Install timeline",
+      "remoteCount": "Remote controls"
+    },
+    "validation": {
+      "invalidData": "Invalid data.",
+      "invalidOrder": "Invalid order.",
+      "invalidProduct": "Invalid product.",
+      "invalidColor": "Please select a valid color.",
+      "nameRequired": "Please enter your full name.",
+      "phoneRequired": "Please enter a valid phone number.",
+      "emailRequired": "Please enter a valid email address.",
+      "cityRequired": "Please select a valid city.",
+      "widthRequired": "Please enter a valid width (1–2000 cm).",
+      "heightRequired": "Please enter a valid height (1–2000 cm).",
+      "dimensionRequired": "Please select dimensions (3 × 3 m or 4 × 3 m).",
+      "invalidMotorVariant": "Invalid motor type.",
+      "invalidRailMeters": "Please enter a valid rail length (0–100 m)."
+    }
+  },
+  "pricing": {
+    "italianPackageIncludes": {
+      "item1": "1 motor + control panel",
+      "item2": "2 remote controls",
+      "item3": "2 photocells",
+      "item4": "1 flasher light",
+      "item5": "4 meters of rails"
+    }
+  },
+  "wizard": {
+    "garageDoor": {
+      "title": "Configure Your Garage Door",
+      "subtitle": "4 steps to a free quote — no registration and no obligation.",
+      "steps": {
+        "options": "Options",
+        "dimensions": "Dimensions",
+        "style": "Color",
+        "contact": "Contact"
+      },
+      "options": {
+        "title": "Choose Options",
+        "subtitle": "Select installation and number of remotes — the automatic motor is always included.",
+        "motorIncluded": "The automatic motor is always included in the quote.",
+        "mounting": {
+          "label": "Installation",
+          "with": {
+            "title": "With installation",
+            "description": "Professional installation by our team."
+          },
+          "without": {
+            "title": "Without installation",
+            "description": "Product only — no installation from us."
+          }
+        },
+        "remotes": {
+          "label": "Remote controls",
+          "subtitle": "How many remote controls do you need in total?",
+          "includedInPrice": "The garage door price includes {count} remote controls. Additional remotes are charged extra.",
+          "includedOption": "{count} (included)",
+          "more": "More",
+          "customLabel": "Custom number",
+          "customPlaceholder": "e.g. 10",
+          "customHint": "Enter a number from {min} to {max} (for larger buildings)."
+        }
+      },
+      "dimensions": {
+        "title": "Enter Dimensions",
+        "subtitle": "Enter the approximate width and height of the opening in cm.",
+        "hint": "Exact dimensions will be confirmed before the final quote.",
+        "validationEmpty": "Enter both width and height.",
+        "validationRange": "Dimensions must be between {min} and {max} cm."
+      },
+      "style": {
+        "title": "Choose a Color",
+        "subtitle": "Select the panel color for your garage door."
+      },
+      "contact": {
+        "title": "Contact Details",
+        "subtitle": "Leave your contact info — we'll reply with a quote and installation timeline.",
+        "configSummary": "Configuration summary",
+        "viewPreview": "View with illustration",
+        "viewPreviewTitle": "Your configuration",
+        "timeline": {
+          "label": "When do you plan to install?",
+          "asap": "Immediately",
+          "30days": "Within the next 30 days",
+          "2-3months": "In 2–3 months",
+          "exploring": "Just exploring"
+        }
+      },
+      "summary": {
+        "live": "Live",
+        "title": "Your Configuration",
+        "product": "Product",
+        "motor": "Motor",
+        "mounting": "Installation",
+        "dimensions": "Dimensions",
+        "color": "Color",
+        "remotes": "Remotes",
+        "yes": "Yes",
+        "no": "No",
+        "included": "Included",
+        "disclaimer": "This is an indicative configuration. The final quote is confirmed after inspecting the opening."
+      },
+      "preview": {
+        "title": "Door Preview",
+        "note": "Illustrative preview based on your selected color and proportions. The actual appearance may vary slightly.",
+        "motorBadge": "With motor",
+        "mountingBadge": "With installation"
+      },
+      "back": "Back",
+      "next": "Next",
+      "submit": "Submit Quote Request",
+      "success": {
+        "title": "Request Received!",
+        "subtitle": "We'll contact you soon with a quote and details.",
+        "newQuote": "New Quote"
+      }
+    },
+    "pergola": {
+      "title": "Configure Your Pergola",
+      "subtitle": "3 steps to a free quote — dimensions, color, and contact.",
+      "dimensions": {
+        "title": "Choose Dimensions",
+        "subtitle": "Select a standard pergola size.",
+        "hint": "For custom dimensions, mention them in the notes on the final step."
+      },
+      "style": {
+        "title": "Choose a Color",
+        "subtitle": "Select the color for your aluminum pergola."
+      },
+      "contact": {
+        "title": "Contact Details",
+        "subtitle": "Leave your contact info — we'll reply with a quote."
+      },
+      "summary": {
+        "title": "Your Configuration"
+      }
+    },
+    "curtains": {
+      "title": "Configure Your PVC Curtain",
+      "subtitle": "3 steps to a free quote — dimensions, color, and contact.",
+      "dimensions": {
+        "title": "Enter Dimensions",
+        "subtitle": "Enter the approximate width and height of the opening in cm.",
+        "hint": "Exact dimensions will be confirmed before the final quote."
+      },
+      "style": {
+        "title": "Choose a Color",
+        "subtitle": "Select the color for your PVC magnetic curtain."
+      },
+      "contact": {
+        "title": "Contact Details",
+        "subtitle": "Leave your contact info — we'll reply with a quote."
+      },
+      "summary": {
+        "title": "Your Configuration"
+      }
+    }
+  }
+}

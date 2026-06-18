@@ -2,21 +2,26 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
+import { useTranslations } from '@/components/locale-provider';
+import type { ColorSwatchItem } from '@/lib/product-colors';
 import { cn } from '@/lib/utils';
 
-export type ColorSwatchItem = {
-  name: string;
-  hex: string;
-  wide?: boolean;
-};
+export type { ColorSwatchItem };
 
 function SwatchButton({
   color,
+  label,
   selected,
   onSelect,
   className,
 }: {
   color: ColorSwatchItem;
+  label: string;
   selected: boolean;
   onSelect?: () => void;
   className?: string;
@@ -32,53 +37,49 @@ function SwatchButton({
         className,
       )}
       style={{ backgroundColor: color.hex }}
-      aria-label={color.name}
+      aria-label={label}
       aria-pressed={selected}
     />
   );
 }
 
-function SwatchWithHoverLabel({
-  color,
-  selected,
-  onSelect,
-  className,
-}: {
-  color: ColorSwatchItem;
-  selected?: boolean;
-  onSelect?: () => void;
-  className?: string;
-}) {
-  return (
-    <div className={cn('relative group', className)}>
-      <SwatchButton color={color} selected={!!selected} onSelect={onSelect} />
-      <span
-        role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-slate-800 px-2.5 py-1 text-xs font-medium text-white opacity-0 shadow-md transition-opacity group-hover:opacity-100 md:block"
-      >
-        {color.name}
-      </span>
-    </div>
-  );
-}
-
 export function ColorSwatches({ colors }: { colors: ColorSwatchItem[] }) {
+  const t = useTranslations();
   const [selected, setSelected] = useState<string | null>(null);
 
   return (
     <div className="min-w-0">
       <div className="flex gap-4 flex-wrap">
-        {colors.map((color) => (
-          <div key={color.name}>
-            <SwatchWithHoverLabel color={color} className="hidden md:block" />
-            <SwatchButton
-              color={color}
-              selected={selected === color.name}
-              onSelect={() => setSelected(color.name)}
-              className="md:hidden"
-            />
-          </div>
-        ))}
+        {colors.map((color) => {
+          const label = t(`colors.${color.key}`);
+
+          return (
+            <div key={color.key}>
+              <div className="hidden md:block">
+                <HoverCard openDelay={60} closeDelay={40}>
+                  <HoverCardTrigger asChild>
+                    <SwatchButton
+                      color={color}
+                      label={label}
+                      selected={false}
+                      onSelect={() => {}}
+                    />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-auto px-3 py-2 text-sm">
+                    {label}
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <SwatchButton
+                color={color}
+                label={label}
+                selected={selected === color.key}
+                onSelect={() => setSelected(color.key)}
+                className="md:hidden"
+              />
+            </div>
+          );
+        })}
       </div>
       <p
         className={cn(
@@ -87,7 +88,7 @@ export function ColorSwatches({ colors }: { colors: ColorSwatchItem[] }) {
         )}
         aria-live="polite"
       >
-        {selected ?? ''}
+        {selected ? t(`colors.${selected}`) : ''}
       </p>
     </div>
   );
@@ -102,21 +103,30 @@ export function ColorSwatchPicker({
   value: string;
   onChange: (color: string) => void;
 }) {
+  const t = useTranslations();
+
   return (
     <div>
-      <p className="block text-sm font-medium text-slate-700 mb-2">Боја</p>
+      <p className="block text-sm font-medium text-slate-700 mb-2">
+        {t('forms.order.color')}
+      </p>
       <div className="flex flex-wrap gap-3">
-        {colors.map((item) => (
-          <SwatchWithHoverLabel
-            key={item.name}
-            color={item}
-            selected={value === item.name}
-            onSelect={() => onChange(item.name)}
-          />
-        ))}
+        {colors.map((item) => {
+          const label = t(`colors.${item.key}`);
+
+          return (
+            <SwatchButton
+              key={item.key}
+              color={item}
+              label={label}
+              selected={value === item.key}
+              onSelect={() => onChange(item.key)}
+            />
+          );
+        })}
       </div>
       <p className="mt-2 text-sm text-slate-600 min-h-[1.25rem]">
-        {value || 'Изберете боја'}
+        {value ? t(`colors.${value}`) : t('forms.order.selectColor')}
       </p>
     </div>
   );
@@ -127,11 +137,13 @@ export function ProductColorsSection({
 }: {
   colors: ColorSwatchItem[];
 }) {
+  const t = useTranslations();
+
   return (
     <div className="rounded-xl py-4 hover:cursor-default lg:px-8 lg:py-7 mt-4">
       <div className="flex items-center gap-3 mb-1">
         <Image src="/swatchbook.svg" width={32} height={32} alt="" />
-        <h2 className="desc-title">Достапни се следните бои:</h2>
+        <h2 className="desc-title">{t('productSections.colors.title')}</h2>
       </div>
       <div className="flex ml-3 mt-2">
         <Image

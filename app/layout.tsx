@@ -5,28 +5,39 @@ import { Footer } from './(main)/footer';
 import { Header } from './(main)/header';
 import { MobileHeader } from '@/components/mobile-header';
 import { MobileCallBar } from '@/components/mobile-call-bar';
+import { LocaleProvider } from '@/components/locale-provider';
+import { getLocale } from '@/lib/i18n/get-locale';
+import { getDictionary, createTranslator } from '@/lib/i18n/get-dictionary';
 
 const font = Montserrat({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: 'БСЕ Компани',
-  description:
-    'БСЕ Компани - Изработка и монтажа на роло гаражни врати. Продажба на мотори за лизгачки порти. Изработка и монтажа на Алуминиумски Перголи.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const t = createTranslator(getDictionary(locale));
 
-export default function RootLayout({
+  return {
+    title: t('metadata.home.title'),
+    description: t('metadata.home.description'),
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+
   return (
-    <html lang="en">
-      <body className={`${font.className} pb-16 md:pb-0`}>
-        <MobileHeader />
-        <Header />
-        {children}
-        <Footer />
-        <MobileCallBar />
+    <html lang={locale}>
+      <body className={font.className}>
+        <LocaleProvider>
+          <MobileHeader />
+          <Header />
+          <main className="pt-16 md:pt-0">{children}</main>
+          <Footer />
+          <MobileCallBar />
+        </LocaleProvider>
       </body>
     </html>
   );

@@ -6,37 +6,48 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { Metadata } from 'next';
+import { getServerTranslations } from '@/lib/i18n/get-server-translations';
+import { getLocale } from '@/lib/i18n/get-locale';
+import { localizedPath } from '@/lib/i18n/locales';
+import type { Metadata } from 'next';
 import Image from 'next/image';
-
-export const metadata: Metadata = {
-  title: 'Контакт | БСЕ Компани',
-  description:
-    'Контактирајте ја БСЕ Компани — телефон, email или контакт форма за понуди и прашања.',
-};
+import Link from 'next/link';
 
 type Props = {
   children: React.ReactNode;
 };
 
-const ContactLayout = ({ children }: Props) => {
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getServerTranslations();
+  return {
+    title: t('metadata.contact.title'),
+    description: t('metadata.contact.description'),
+  };
+}
+
+const ContactLayout = async ({ children }: Props) => {
+  const { t } = await getServerTranslations();
+  const locale = await getLocale();
+
   return (
-    <div className="mt-[72px] md:mt-0 max-w-[1056px] mx-auto px-4 pb-12">
-      <Breadcrumb className="mt-3 mb-4">
+    <div className="max-w-[1056px] mx-auto px-4 pb-12 md:pt-8">
+      <Breadcrumb className="mt-3 md:mt-0 mb-4">
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">
-              <Image
-                src="/homepage-2.svg"
-                alt="Homepage icon"
-                width={20}
-                height={20}
-              />
+            <BreadcrumbLink asChild>
+              <Link href={localizedPath('/', locale)}>
+                <Image
+                  src="/homepage-2.svg"
+                  alt={t('breadcrumb.home')}
+                  width={20}
+                  height={20}
+                />
+              </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Контакт</BreadcrumbPage>
+            <BreadcrumbPage>{t('breadcrumb.contact')}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>

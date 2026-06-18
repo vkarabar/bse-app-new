@@ -1,16 +1,26 @@
+export type ProductNavLinkKey =
+  | 'allProducts'
+  | 'garageDoors'
+  | 'slidingGateMotors'
+  | 'pergolas'
+  | 'pvcCurtains'
+  | 'wifiControllers'
+  | 'garageDoorMotors'
+  | 'components';
+
 export type ProductNavLink = {
   href: string;
-  label: string;
+  key: ProductNavLinkKey;
   bold?: boolean;
 };
 
 export const PRODUCT_NAV_LINKS: ProductNavLink[] = [
-  { href: '/proizvodi', label: 'Сите производи', bold: true },
-  { href: '/proizvodi/vrati', label: 'Гаражни врати' },
-  { href: '/proizvodi/motori-porti', label: 'Мотори за лизгачки порти' },
-  { href: '/proizvodi/pergoli', label: 'Алуминиумски перголи' },
-  { href: '/proizvodi/zavesi', label: 'PVC магнетни завеси' },
-  { href: '/proizvodi/kontroleri', label: 'Wi-Fi управувачи' },
-  { href: '/proizvodi/motori-vrati', label: 'Мотори за гаражни врати' },
-  { href: '/proizvodi/komponenti', label: 'Компоненти' },
+  { href: '/proizvodi', key: 'allProducts', bold: true },
+  { href: '/proizvodi/vrati', key: 'garageDoors' },
+  { href: '/proizvodi/motori-porti', key: 'slidingGateMotors' },
+  { href: '/proizvodi/pergoli', key: 'pergolas' },
+  { href: '/proizvodi/zavesi', key: 'pvcCurtains' },
+  { href: '/proizvodi/kontroleri', key: 'wifiControllers' },
+  { href: '/proizvodi/motori-vrati', key: 'garageDoorMotors' },
+  { href: '/proizvodi/komponenti', key: 'components' },
 ];

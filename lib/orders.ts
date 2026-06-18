@@ -1,9 +1,11 @@
-import type { ColorSwatchItem } from '@/components/color-swatches';
+import type { Translator } from '@/lib/i18n/get-dictionary';
 import {
+  getColorKeys,
   PERGOLI_COLORS,
   PERGOLI_DIMENSIONS,
   VRATI_COLORS,
   ZAVESI_COLORS,
+  type ColorKey,
   type PergolaDimensionId,
 } from '@/lib/product-colors';
 import { isMacedonianCity } from '@/lib/macedonian-cities';
@@ -24,10 +26,14 @@ export type OrderPayload = {
   width?: number;
   height?: number;
   dimension?: PergolaDimensionId;
-  color?: string;
+  color?: ColorKey;
   motorVariant?: MotorVariant;
   mounting?: boolean;
   railMeters?: number;
+  motorRequested?: boolean;
+  mountingRequested?: boolean;
+  installTimeline?: string;
+  remoteCount?: number;
   name: string;
   phone: string;
   email: string;
@@ -36,32 +42,50 @@ export type OrderPayload = {
   website?: string;
 };
 
-export const ORDER_PRODUCT_LABELS: Record<OrderProduct, string> = {
-  vrati: 'Роло гаражна врата',
-  pergoli: 'Алуминиумска пергола',
-  zavesi: 'PVC магнетна завеса',
-  'motori-porti': 'Мотор за лизгачка порта',
-};
-
 const PRODUCTS_WITH_COLOR = ['vrati', 'pergoli', 'zavesi'] as const;
 const PRODUCTS_WITH_DIMENSIONS = ['vrati', 'zavesi'] as const;
 type ProductWithColor = (typeof PRODUCTS_WITH_COLOR)[number];
 type ProductWithDimensions = (typeof PRODUCTS_WITH_DIMENSIONS)[number];
 
-const ALLOWED_COLORS: Record<ProductWithColor, string[]> = {
-  vrati: VRATI_COLORS.map((c) => c.name),
-  pergoli: PERGOLI_COLORS.map((c) => c.name),
-  zavesi: ZAVESI_COLORS.map((c) => c.name),
+const ALLOWED_COLORS: Record<ProductWithColor, ColorKey[]> = {
+  vrati: getColorKeys(VRATI_COLORS),
+  pergoli: getColorKeys(PERGOLI_COLORS),
+  zavesi: getColorKeys(ZAVESI_COLORS),
 };
 
 const ALLOWED_PERGOLA_DIMENSIONS = PERGOLI_DIMENSIONS.map((item) => item.id);
 
-export function getColorNames(colors: ColorSwatchItem[]): string[] {
-  return colors.map((color) => color.name);
-}
-
 export function getPergolaDimensionLabel(id: PergolaDimensionId): string {
   return PERGOLI_DIMENSIONS.find((item) => item.id === id)?.label ?? id;
+}
+
+export function formatOrderDimensionLines(
+  order: OrderPayload,
+  t: Translator,
+): string[] {
+  if (order.product === 'pergoli' && order.dimension) {
+    return [
+      `${t('orders.reviewLabels.dimensions')}: ${getPergolaDimensionLabel(order.dimension)}`,
+    ];
+  }
+
+  if (order.width && order.height) {
+    return [
+      `${t('orders.reviewLabels.width')}: ${order.width} cm`,
+      `${t('orders.reviewLabels.height')}: ${order.height} cm`,
+    ];
+  }
+
+  return [];
+}
+
+export function formatOrderDimensions(
+  order: OrderPayload,
+  t: Translator,
+): string {
+  const lines = formatOrderDimensionLines(order, t);
+  if (lines.length === 0) return '—';
+  return lines.join(', ');
 }
 
 export function getMotoriPortiTotal(order: OrderPayload): number | null {
@@ -73,31 +97,46 @@ export function getMotoriPortiTotal(order: OrderPayload): number | null {
   );
 }
 
-export function formatMotoriPortiSummary(order: OrderPayload): string {
+export function formatMotoriPortiSummary(
+  order: OrderPayload,
+  t: Translator,
+): string {
   if (!order.motorVariant) return '';
 
-  const pricing = getMotoriPortiPricing(order.motorVariant);
+  const pricing = getMotoriPortiPricing(order.motorVariant, t);
   const railMeters = order.railMeters ?? 0;
   const lines: string[] = [];
 
-  lines.push(`Тип: ${getMotorVariantLabel(order.motorVariant)}`);
+  lines.push(
+    `${t('orders.reviewLabels.type')}: ${getMotorVariantLabel(order.motorVariant, t)}`,
+  );
 
   if (pricing.packageIncludes?.length) {
-    lines.push(`Комплет: ${formatEur(pricing.motorEur)}`);
-    lines.push(`Вклучено: ${pricing.packageIncludes.join('; ')}`);
+    lines.push(
+      `${t('orders.reviewLabels.package')}: ${formatEur(pricing.motorEur)}`,
+    );
+    lines.push(
+      `${t('orders.reviewLabels.included')}: ${pricing.packageIncludes.join('; ')}`,
+    );
   } else {
-    lines.push(`Мотор: ${formatEur(pricing.motorEur)}`);
+    lines.push(
+      `${t('orders.reviewLabels.motor')}: ${formatEur(pricing.motorEur)}`,
+    );
   }
 
   if (order.mounting) {
-    lines.push(`Монтажа: ${formatEur(pricing.mountingEur)}`);
+    lines.push(
+      `${t('orders.reviewLabels.mounting')}: ${formatEur(pricing.mountingEur)}`,
+    );
   }
 
   if (railMeters > 0) {
     const railLabel =
       pricing.includedRailMeters > 0
-        ? `Дополнителни шини (${pricing.includedRailMeters} m вклучени)`
-        : 'Шини за порта';
+        ? t('orders.reviewLabels.extraRails', {
+            meters: pricing.includedRailMeters,
+          })
+        : t('orders.reviewLabels.gateRails');
 
     lines.push(
       `${railLabel}: ${railMeters} m × ${formatEur(pricing.railPerMeterEur)}/m = ${formatEur(railMeters * pricing.railPerMeterEur)}`,
@@ -106,26 +145,26 @@ export function formatMotoriPortiSummary(order: OrderPayload): string {
 
   const total = getMotoriPortiTotal(order);
   if (total !== null) {
-    lines.push(`Вкупно: ${formatEur(total)}`);
+    lines.push(`${t('orders.reviewLabels.total')}: ${formatEur(total)}`);
   }
 
   return lines.join('\n');
 }
 
-function parseContactFields(body: Record<string, unknown>) {
+function parseContactFields(body: Record<string, unknown>, t: Translator) {
   const name = String(body.name ?? '').trim();
   if (name.length < 2) {
-    return { ok: false as const, error: 'Внесете име и презиме.' };
+    return { ok: false as const, error: t('orders.validation.nameRequired') };
   }
 
   const phone = String(body.phone ?? '').trim();
   if (phone.length < 8) {
-    return { ok: false as const, error: 'Внесете валиден телефон.' };
+    return { ok: false as const, error: t('orders.validation.phoneRequired') };
   }
 
   const email = String(body.email ?? '').trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { ok: false as const, error: 'Внесете валидна email адреса.' };
+    return { ok: false as const, error: t('orders.validation.emailRequired') };
   }
 
   const notes =
@@ -136,39 +175,65 @@ function parseContactFields(body: Record<string, unknown>) {
   const cityRaw = String(body.city ?? '').trim();
   const city = cityRaw || undefined;
   if (city && !isMacedonianCity(city)) {
-    return { ok: false as const, error: 'Изберете валиден град.' };
+    return { ok: false as const, error: t('orders.validation.cityRequired') };
   }
 
   return { ok: true as const, name, phone, email, city, notes };
 }
 
-function parseDimensions(body: Record<string, unknown>) {
+function parseOptionalBoolean(value: unknown): boolean | undefined {
+  if (value === true || value === 'true') return true;
+  if (value === false || value === 'false') return false;
+  return undefined;
+}
+
+function parseInstallTimeline(value: unknown): string | undefined {
+  const timeline = String(value ?? '').trim();
+  if (
+    timeline === 'asap' ||
+    timeline === '30days' ||
+    timeline === '2-3months' ||
+    timeline === 'exploring'
+  ) {
+    return timeline;
+  }
+  return undefined;
+}
+
+function parseRemoteCount(value: unknown): number | undefined {
+  if (value === undefined || value === null || value === '') return undefined;
+  const count = Number(value);
+  if (!Number.isInteger(count) || count < 2 || count > 99) return undefined;
+  return count;
+}
+
+function parseDimensions(body: Record<string, unknown>, t: Translator) {
   const width = Number(body.width);
   const height = Number(body.height);
 
   if (!Number.isFinite(width) || width <= 0 || width > 2000) {
-    return { ok: false as const, error: 'Внесете валидна ширина (1–2000 см).' };
+    return { ok: false as const, error: t('orders.validation.widthRequired') };
   }
 
   if (!Number.isFinite(height) || height <= 0 || height > 2000) {
-    return { ok: false as const, error: 'Внесете валидна висина (1–2000 см).' };
+    return { ok: false as const, error: t('orders.validation.heightRequired') };
   }
 
   return { ok: true as const, width, height };
 }
 
-export function validateOrderPayload(data: unknown): {
-  ok: true;
-  payload: OrderPayload;
-} | { ok: false; error: string } {
+export function validateOrderPayload(
+  data: unknown,
+  t: Translator,
+): { ok: true; payload: OrderPayload } | { ok: false; error: string } {
   if (!data || typeof data !== 'object') {
-    return { ok: false, error: 'Невалидни податоци.' };
+    return { ok: false, error: t('orders.validation.invalidData') };
   }
 
   const body = data as Record<string, unknown>;
 
   if (body.website) {
-    return { ok: false, error: 'Невалидна нарачка.' };
+    return { ok: false, error: t('orders.validation.invalidOrder') };
   }
 
   const product = body.product;
@@ -178,27 +243,25 @@ export function validateOrderPayload(data: unknown): {
     product !== 'zavesi' &&
     product !== 'motori-porti'
   ) {
-    return { ok: false, error: 'Невалиден производ.' };
+    return { ok: false, error: t('orders.validation.invalidProduct') };
   }
 
-  const contact = parseContactFields(body);
+  const contact = parseContactFields(body, t);
   if (!contact.ok) return contact;
 
   const { name, phone, email, city, notes } = contact;
 
   if (PRODUCTS_WITH_COLOR.includes(product as ProductWithColor)) {
-    const color = String(body.color ?? '').trim();
-    if (!ALLOWED_COLORS[product as ProductWithColor].includes(color)) {
-      return { ok: false, error: 'Изберете валидна боја.' };
+    const colorRaw = String(body.color ?? '').trim();
+    if (!ALLOWED_COLORS[product as ProductWithColor].includes(colorRaw as ColorKey)) {
+      return { ok: false, error: t('orders.validation.invalidColor') };
     }
+    const color = colorRaw as ColorKey;
 
     if (product === 'pergoli') {
       const dimension = String(body.dimension ?? '').trim() as PergolaDimensionId;
       if (!ALLOWED_PERGOLA_DIMENSIONS.includes(dimension)) {
-        return {
-          ok: false,
-          error: 'Изберете димензии (3 × 3 m или 4 × 3 m).',
-        };
+        return { ok: false, error: t('orders.validation.dimensionRequired') };
       }
 
       return {
@@ -208,7 +271,7 @@ export function validateOrderPayload(data: unknown): {
     }
 
     if (PRODUCTS_WITH_DIMENSIONS.includes(product as ProductWithDimensions)) {
-      const dimensions = parseDimensions(body);
+      const dimensions = parseDimensions(body, t);
       if (!dimensions.ok) return dimensions;
 
       return {
@@ -218,6 +281,10 @@ export function validateOrderPayload(data: unknown): {
           width: dimensions.width,
           height: dimensions.height,
           color,
+          motorRequested: parseOptionalBoolean(body.motorRequested),
+          mountingRequested: parseOptionalBoolean(body.mountingRequested),
+          installTimeline: parseInstallTimeline(body.installTimeline),
+          remoteCount: parseRemoteCount(body.remoteCount),
           name,
           phone,
           email,
@@ -232,7 +299,7 @@ export function validateOrderPayload(data: unknown): {
   const motorVariant = String(body.motorVariant ?? '').trim() as MotorVariant;
 
   if (motorVariant !== 'spanish' && motorVariant !== 'italian') {
-    return { ok: false, error: 'Невалиден тип на мотор.' };
+    return { ok: false, error: t('orders.validation.invalidMotorVariant') };
   }
 
   const railMetersRaw = body.railMeters;
@@ -242,10 +309,7 @@ export function validateOrderPayload(data: unknown): {
       : Number(railMetersRaw);
 
   if (!Number.isFinite(railMeters) || railMeters < 0 || railMeters > 100) {
-    return {
-      ok: false,
-      error: 'Внесете валидна должина за шини (0–100 m).',
-    };
+    return { ok: false, error: t('orders.validation.invalidRailMeters') };
   }
 
   return {

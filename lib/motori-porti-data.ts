@@ -1,8 +1,7 @@
+import type { Translator } from '@/lib/i18n/get-dictionary';
+
 export const MOTORI_PORTI_HUB = {
   href: '/proizvodi/motori-porti',
-  label: 'Мотори за лизгачки порти',
-  metaDescription:
-    'Шпански и италијански мотори за лизгачки порти — изберете модел според вашите потреби.',
 } as const;
 
 export type MotorVariant = 'spanish' | 'italian';
@@ -22,126 +21,150 @@ export type MotorPageData = {
   metaDescription: string;
   breadcrumb: string;
   otherLink: { href: string; label: string };
+  seeAlso: string;
   images: { id: number; title: string; imageSrc: string }[];
   intro: string[];
   models?: { title: string; items: string[] };
   prosTitle: string;
   pros: MotorFeature[];
-  consTitle?: string;
-  cons?: MotorFeature[];
 };
 
-export const MOTOR_PAGES: Record<MotorVariant, MotorPageData> = {
+const MOTOR_PATHS: Record<
+  MotorVariant,
+  {
+    href: string;
+    cardIcon: string;
+    otherVariant: MotorVariant;
+    imageSrc: string;
+    pros: { icon: string; titleKey: string; textKey: string }[];
+    modelItemKeys?: string[];
+  }
+> = {
   spanish: {
-    id: 'spanish',
     href: '/proizvodi/motori-porti/spanski',
     cardIcon: '/motor2.png',
-    navLabel: 'Шпански мотори',
-    title: 'Шпански мотори за лизгачки порти',
-    metaDescription:
-      'Ултра брз шпански мотор за лизгачки порти со Wi-Fi управување — капацитет до 800 kg.',
-    breadcrumb: 'Шпански мотори',
-    otherLink: {
-      href: '/proizvodi/motori-porti/italianski',
-      label: 'Италијански мотори за лизгачки порти',
-    },
-    images: [
-      {
-        id: 1,
-        title: 'Шпански мотор за лизгачка порта',
-        imageSrc: '/motori/motor1.png',
-      },
-    ],
-    intro: [
-      'Ултра брзи шпански мотори за лизгачки порти со врвни перформанси.',
-      'Овозможуваат брзо и непречено отворање и затварање преку далечински уред или мобилен телефон.',
-      'Целосно се произведени од висококвалитетни материјали со што Ви гарантираме долготрајност.',
-    ],
-    models: {
-      title: 'Модел:',
-      items: ['Мотор со капацитет до 800 kg'],
-    },
-    prosTitle: 'Предности',
+    otherVariant: 'italian',
+    imageSrc: '/motori/motor1.png',
+    modelItemKeys: ['productPages.motoriSpanish.models.item1'],
     pros: [
       {
         icon: '/speed_dark.svg',
-        title: 'Ултра брза работа',
-        text: 'Висока оперативна брзина — идеално кога често ја користите порта.',
+        titleKey: 'productPages.motoriSpanish.pros.speed.title',
+        textKey: 'productPages.motoriSpanish.pros.speed.text',
       },
       {
         icon: '/wifi-2.svg',
-        title: 'Wi-Fi управување',
-        text: 'Контрола преку мобилен телефон, без дополнителен хардвер.',
+        titleKey: 'productPages.motoriSpanish.pros.wifi.title',
+        textKey: 'productPages.motoriSpanish.pros.wifi.text',
       },
       {
         icon: '/award.svg',
-        title: 'Висок капацитет',
-        text: 'Еден модел со капацитет до 800 kg — погоден за повеќето лизгачки порти.',
+        titleKey: 'productPages.motoriSpanish.pros.capacity.title',
+        textKey: 'productPages.motoriSpanish.pros.capacity.text',
       },
     ],
   },
   italian: {
-    id: 'italian',
     href: '/proizvodi/motori-porti/italianski',
     cardIcon: '/motori/motori-it.jpg',
-    navLabel: 'Италијански мотори Oxygen',
-    title: 'Италијански мотори за лизгачки порти',
-    metaDescription:
-      'Италијански OXYGEN мотори за лизгачки порти — комплет од 300 € со контролна табла, далечински, фото-ќелии и 4 m шини.',
-    breadcrumb: 'Италијански мотори',
-    otherLink: {
-      href: '/proizvodi/motori-porti/spanski',
-      label: 'Шпански мотори за лизгачки порти',
-    },
-    images: [
-      {
-        id: 1,
-        title: 'Италијански OXYGEN мотор за лизгачка порта',
-        imageSrc: '/motori/motori-it.jpg',
-      },
+    otherVariant: 'spanish',
+    imageSrc: '/motori/motori-it.jpg',
+    modelItemKeys: [
+      'productPages.motoriItalian.models.item1',
+      'productPages.motoriItalian.models.item2',
+      'productPages.motoriItalian.models.item3',
+      'productPages.motoriItalian.models.item4',
+      'productPages.motoriItalian.models.item5',
     ],
-    intro: [
-      'Италијански OXYGEN мотори — 100% Made in Italy со докажан квалитет.',
-      'Комплет од 300 € — мотор со контролна табла, далечински, фото-ќелии, трепкачко светло и 4 m шини.',
-      'Тивка и стабилна работа, наменети за порти до 600 kg.',
-    ],
-    models: {
-      title: 'Во цената од 300 € е вклучено:',
-      items: [
-        '1 мотор + контролна табла',
-        '2 далечински управувачи',
-        '2 фото-ќелии',
-        '1 трепкачко светло',
-        '4 метри шини',
-      ],
-    },
-    prosTitle: 'Предности',
     pros: [
       {
         icon: '/award.svg',
-        title: 'Италијански квалитет',
-        text: 'Premium изработка и компоненти — докажена доверливост на европскиот пазар.',
+        titleKey: 'productPages.motoriItalian.pros.quality.title',
+        textKey: 'productPages.motoriItalian.pros.quality.text',
       },
       {
         icon: '/speed_dark.svg',
-        title: 'Тивка работа',
-        text: 'Оптимизиран механизам — мирно отворање и затварање без непотребен шум.',
+        titleKey: 'productPages.motoriItalian.pros.quiet.title',
+        textKey: 'productPages.motoriItalian.pros.quiet.text',
       },
       {
         icon: '/wifi-2.svg',
-        title: 'Комплет решение',
-        text: 'Сè потребно за монтажа е во пакетот — помалку дополнителни нарачки.',
+        titleKey: 'productPages.motoriItalian.pros.complete.title',
+        textKey: 'productPages.motoriItalian.pros.complete.text',
       },
     ],
   },
 };
 
-export const MOTOR_PAGE_LIST = Object.values(MOTOR_PAGES);
+const MOTOR_TRANSLATION_PREFIX: Record<MotorVariant, string> = {
+  spanish: 'productPages.motoriSpanish',
+  italian: 'productPages.motoriItalian',
+};
 
-export function getMotorVariantLabel(id: MotorVariant): string {
-  return MOTOR_PAGES[id]?.title ?? id;
+export const MOTOR_VARIANTS: MotorVariant[] = ['spanish', 'italian'];
+
+export function buildMotorPageData(
+  variant: MotorVariant,
+  t: Translator,
+): MotorPageData {
+  const prefix = MOTOR_TRANSLATION_PREFIX[variant];
+  const config = MOTOR_PATHS[variant];
+  const otherPrefix = MOTOR_TRANSLATION_PREFIX[config.otherVariant];
+
+  return {
+    id: variant,
+    href: config.href,
+    cardIcon: config.cardIcon,
+    navLabel: t(`${prefix}.navLabel`),
+    title: t(`${prefix}.title`),
+    metaDescription: t(`${prefix}.metaDescription`),
+    breadcrumb: t(`${prefix}.breadcrumb`),
+    seeAlso: t(`${prefix}.seeAlso`),
+    otherLink: {
+      href: MOTOR_PATHS[config.otherVariant].href,
+      label: t(`${otherPrefix}.title`),
+    },
+    images: [
+      {
+        id: 1,
+        title: t(`${prefix}.imageAlt`),
+        imageSrc: config.imageSrc,
+      },
+    ],
+    intro: [
+      t(`${prefix}.intro.p1`),
+      t(`${prefix}.intro.p2`),
+      t(`${prefix}.intro.p3`),
+    ],
+    models: config.modelItemKeys
+      ? {
+          title: t(`${prefix}.models.title`),
+          items: config.modelItemKeys.map((key) => t(key)),
+        }
+      : undefined,
+    prosTitle: t(`${prefix}.prosTitle`),
+    pros: config.pros.map((item) => ({
+      icon: item.icon,
+      title: t(item.titleKey),
+      text: t(item.textKey),
+    })),
+  };
 }
 
-export function getMotorPageData(variant: MotorVariant): MotorPageData {
-  return MOTOR_PAGES[variant];
+export function getMotorPageData(
+  variant: MotorVariant,
+  t: Translator,
+): MotorPageData {
+  return buildMotorPageData(variant, t);
+}
+
+export function getMotorVariantLabel(
+  variant: MotorVariant,
+  t: Translator,
+): string {
+  return t(`${MOTOR_TRANSLATION_PREFIX[variant]}.title`);
+}
+
+export function getMotorPageList(t: Translator): MotorPageData[] {
+  return MOTOR_VARIANTS.map((variant) => buildMotorPageData(variant, t));
 }

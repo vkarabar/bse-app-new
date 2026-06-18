@@ -1,5 +1,5 @@
 import type { ContactPayload } from '@/lib/contact';
-import { escapeHtml, getNotificationEmail, getTransporter } from '@/lib/smtp';
+import { escapeHtml, getNotificationEmails, getTransporter } from '@/lib/smtp';
 
 function buildEmailHtml(contact: ContactPayload) {
   const row = (label: string, value: string) =>
@@ -18,8 +18,8 @@ function buildEmailHtml(contact: ContactPayload) {
 }
 
 export async function sendContactEmail(contact: ContactPayload) {
-  const to = getNotificationEmail();
-  if (!to) {
+  const recipients = getNotificationEmails();
+  if (recipients.length === 0) {
     throw new Error('CONTACT_EMAIL, ORDER_EMAIL or SMTP_USER must be set in .env');
   }
 
@@ -30,7 +30,7 @@ export async function sendContactEmail(contact: ContactPayload) {
 
   await transporter.sendMail({
     from: `"BSE Web" <${process.env.SMTP_USER}>`,
-    to,
+    to: recipients,
     replyTo: contact.email,
     subject: subjectLine,
     html: buildEmailHtml(contact),

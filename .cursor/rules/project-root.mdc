@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+Always work in bse-app-new (`C:\Users\Viktor Karabar\Desktop\Desk\WebDev Projects\BSE App\bse-app-new`). Do NOT implement in bse-app-25 unless explicitly asked to sync back. bse-app-new is the deploy/canonical codebase.

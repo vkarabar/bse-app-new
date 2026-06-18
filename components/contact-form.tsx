@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useTranslations } from '@/components/locale-provider';
+import { postJsonApi } from '@/lib/post-json-api';
 import { cn } from '@/lib/utils';
 
 const inputClassName =
   'w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent';
 
 export function ContactForm() {
+  const t = useTranslations();
   const formRef = useRef<HTMLFormElement>(null);
   const formLoadedAt = useRef(Date.now());
   const [status, setStatus] = useState<
@@ -30,47 +33,39 @@ export function ContactForm() {
     const formData = new FormData(formRef.current);
 
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.get('name'),
-          phone: formData.get('phone'),
-          email: formData.get('email'),
-          subject: formData.get('subject'),
-          message: formData.get('message'),
-          website: formData.get('website'),
-          botcheck: formData.get('botcheck'),
-          formLoadedAt: formLoadedAt.current,
-        }),
+      const result = await postJsonApi('/api/contact', {
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        subject: formData.get('subject'),
+        message: formData.get('message'),
+        website: formData.get('website'),
+        botcheck: formData.get('botcheck'),
+        formLoadedAt: formLoadedAt.current,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error ?? 'Настана грешка.');
+      if (!result.ok) {
+        throw new Error(
+          result.error === 'invalid_response'
+            ? t('contact.errorServer')
+            : result.error ?? t('contact.errorGeneric'),
+        );
       }
 
       setStatus('success');
-      setMessage(data.message);
+      setMessage(result.data?.message ?? '');
       formRef.current.reset();
       formLoadedAt.current = Date.now();
     } catch (err) {
       setStatus('error');
       setMessage(
-        err instanceof Error
-          ? err.message
-          : 'Настана грешка. Обидете се повторно.',
+        err instanceof Error ? err.message : t('contact.errorRetry'),
       );
     }
   }
 
   return (
-    <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      className="space-y-5"
-    >
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
       <input
         type="text"
         name="website"
@@ -94,7 +89,7 @@ export function ContactForm() {
             htmlFor="contact-name"
             className="block text-sm font-medium text-slate-700 mb-1"
           >
-            Име и презиме
+            {t('contact.name')}
           </label>
           <input
             id="contact-name"
@@ -111,7 +106,7 @@ export function ContactForm() {
             htmlFor="contact-phone"
             className="block text-sm font-medium text-slate-700 mb-1"
           >
-            Телефон
+            {t('contact.phoneLabel')}
           </label>
           <input
             id="contact-phone"
@@ -130,7 +125,7 @@ export function ContactForm() {
           htmlFor="contact-email"
           className="block text-sm font-medium text-slate-700 mb-1"
         >
-          Email
+          {t('contact.emailLabel')}
         </label>
         <input
           id="contact-email"
@@ -147,7 +142,7 @@ export function ContactForm() {
           htmlFor="contact-subject"
           className="block text-sm font-medium text-slate-700 mb-1"
         >
-          Наслов (опционално)
+          {t('contact.subject')}
         </label>
         <input
           id="contact-subject"
@@ -163,7 +158,7 @@ export function ContactForm() {
           htmlFor="contact-message"
           className="block text-sm font-medium text-slate-700 mb-1"
         >
-          Порака
+          {t('contact.message')}
         </label>
         <textarea
           id="contact-message"
@@ -173,7 +168,6 @@ export function ContactForm() {
           minLength={10}
           maxLength={5000}
           className={cn(inputClassName, 'resize-none')}
-          placeholder="Напишете го вашето прашање или барање..."
         />
       </div>
 
@@ -182,7 +176,7 @@ export function ContactForm() {
         disabled={status === 'loading'}
         className="btn-main-dark w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {status === 'loading' ? 'Се испраќа...' : 'Испрати порака'}
+        {status === 'loading' ? t('contact.submitting') : t('contact.submit')}
       </button>
 
       {message && (

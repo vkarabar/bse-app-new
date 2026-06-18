@@ -2,9 +2,11 @@ import { getDictionary, createTranslator } from '@/lib/i18n/get-dictionary';
 import {
   formatMotoriPortiSummary,
   formatOrderDimensionLines,
-  getMotoriPortiTotal,
+  formatRackiTendiSummary,
+  getOrderTotal,
   type OrderPayload,
 } from '@/lib/orders';
+import { getGarageDoorMotorLabel } from '@/lib/garage-door-motors';
 import { formatEur } from '@/lib/order-pricing';
 import {
   escapeHtml,
@@ -24,9 +26,18 @@ function buildOrderDetailsLines(order: OrderPayload): string[] {
     return formatMotoriPortiSummary(order, t).split('\n').filter(Boolean);
   }
 
+  if (order.product === 'racki-tendi') {
+    return formatRackiTendiSummary(order, t).split('\n').filter(Boolean);
+  }
+
   const lines = [...formatOrderDimensionLines(order, t)];
   if (order.color) {
     lines.push(`${t('orders.reviewLabels.color')}: ${t(`colors.${order.color}`)}`);
+  }
+  if (order.garageDoorMotor) {
+    lines.push(
+      `${t('orders.reviewLabels.motor')}: ${getGarageDoorMotorLabel(order.garageDoorMotor, t)}`,
+    );
   }
   if (order.mountingRequested !== undefined) {
     lines.push(
@@ -80,7 +91,7 @@ function buildAdminEmailHtml(order: OrderPayload) {
 
 function buildCustomerConfirmationHtml(order: OrderPayload) {
   const productLabel = getProductLabel(order);
-  const total = getMotoriPortiTotal(order);
+  const total = getOrderTotal(order);
 
   const row = (label: string, value: string) =>
     `<tr><td style="padding:8px 12px 8px 0;color:#475569;vertical-align:top;">${label}</td><td style="padding:8px 0;"><strong>${escapeHtml(value)}</strong></td></tr>`;
@@ -122,7 +133,7 @@ function buildCustomerConfirmationHtml(order: OrderPayload) {
 
 function buildCustomerConfirmationText(order: OrderPayload) {
   const productLabel = getProductLabel(order);
-  const total = getMotoriPortiTotal(order);
+  const total = getOrderTotal(order);
 
   const lines = [
     `Почитуван/а ${order.name},`,

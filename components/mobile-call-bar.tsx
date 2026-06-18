@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FileText } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useHomeWizardProgress } from '@/components/home-wizard-progress-context';
 import { shouldHideMobileCallBar } from '@/lib/mobile-call-bar-path';
 import { LocalizedLink } from '@/components/localized-link';
 import { useTranslations } from '@/components/locale-provider';
@@ -15,13 +16,16 @@ const SCROLL_DOWN_BEFORE_SHOW_PX = 140;
 export function MobileCallBar() {
   const pathname = usePathname();
   const t = useTranslations();
+  const wizardProgress = useHomeWizardProgress();
   const hiddenByRoute = shouldHideMobileCallBar(pathname);
+  const hiddenByWizard = wizardProgress?.isWizardInProgress ?? false;
+  const hidden = hiddenByRoute || hiddenByWizard;
   const [visible, setVisible] = useState(false);
   const lastScrollYRef = useRef(0);
   const downScrollAccumRef = useRef(0);
 
   useEffect(() => {
-    if (hiddenByRoute) {
+    if (hidden) {
       setVisible(false);
       return;
     }
@@ -62,10 +66,10 @@ export function MobileCallBar() {
     return () => {
       window.removeEventListener('scroll', updateVisibility);
     };
-  }, [hiddenByRoute]);
+  }, [hidden]);
 
   useEffect(() => {
-    if (hiddenByRoute) {
+    if (hidden) {
       document.body.style.paddingBottom = '0px';
       return;
     }
@@ -75,9 +79,9 @@ export function MobileCallBar() {
     return () => {
       document.body.style.paddingBottom = '';
     };
-  }, [hiddenByRoute, visible]);
+  }, [hidden, visible]);
 
-  if (hiddenByRoute) {
+  if (hidden) {
     return null;
   }
 

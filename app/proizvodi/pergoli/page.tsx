@@ -9,16 +9,15 @@ import { ProductColorsSection } from '@/components/color-swatches';
 import { QuoteProductWizard } from '@/components/quote-product-wizard';
 import { getServerTranslations } from '@/lib/i18n/get-server-translations';
 import { PERGOLI_COLORS } from '@/lib/product-colors';
+import { pergolaImageSrc, toPergolaSliderItems } from '@/lib/product-gallery-images';
 import Image from 'next/image';
 
 const PergoliPage = async () => {
   const { t } = await getServerTranslations();
 
-  const slikiPergoli = [1, 2].map((id) => ({
-    id,
-    title: t('home.slider.pergolaNumbered', { number: id }),
-    imageSrc: `/pergoli/pg${id}.jpg`,
-  }));
+  const slikiPergoli = toPergolaSliderItems((number) =>
+    t('home.slider.pergolaNumbered', { number }),
+  );
 
   return (
     <div>
@@ -28,7 +27,7 @@ const PergoliPage = async () => {
       <div className="mb-3 md:grid md:grid-cols-2 items-center md:mt-0 md:mb-8">
         <div className="md:mr-12 mb-6 md:col-start-2 md:hidden">
           <Image
-            src="/pergoli/pg1.jpg"
+            src={pergolaImageSrc(1)}
             alt={t('common.images.aluminumPergola')}
             height={230}
             width={500}

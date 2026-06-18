@@ -9,6 +9,11 @@ import { ProductColorsSection } from '@/components/color-swatches';
 import { GarageDoorOrderWizard } from '@/components/garage-door-order-wizard';
 import { getServerTranslations } from '@/lib/i18n/get-server-translations';
 import { VRATI_COLORS } from '@/lib/product-colors';
+import {
+  garageDoorImageSrc,
+  toGarageDoorSliderItems,
+  VRATI_PAGE_SLIDER_IDS,
+} from '@/lib/product-gallery-images';
 import Image from 'next/image';
 
 function BoldParagraph({
@@ -49,11 +54,9 @@ function PlaceholderParagraph({
 const VratiPage = async () => {
   const { t } = await getServerTranslations();
 
-  const slikiVrati = [1, 2, 3, 4, 5].map((id, index) => ({
-    id,
-    title: t('home.slider.garageDoorNumbered', { number: index + 1 }),
-    imageSrc: `/vrati/vrata${[4, 3, 2, 1, 5][index]}.jpg`,
-  }));
+  const slikiVrati = toGarageDoorSliderItems(VRATI_PAGE_SLIDER_IDS, (number) =>
+    t('home.slider.garageDoorNumbered', { number }),
+  );
 
   return (
     <div>
@@ -63,7 +66,7 @@ const VratiPage = async () => {
       <div className="mb-3 md:grid md:grid-cols-2 items-center px-1 my-6 md:mt-0 md:mb-8">
         <div className="md:mr-12 mb-6 md:col-start-2 md:hidden">
           <Image
-            src="/vrati/vrata1.jpg"
+            src={garageDoorImageSrc(1)}
             alt={t('common.images.garageDoor')}
             width={500}
             height={290}

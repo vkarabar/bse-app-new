@@ -6,6 +6,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { getPageMetadata } from '@/lib/get-page-metadata';
 import { getServerTranslations } from '@/lib/i18n/get-server-translations';
 import { getLocale } from '@/lib/i18n/get-locale';
 import { localizedPath } from '@/lib/i18n/locales';
@@ -18,11 +19,7 @@ type Props = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getServerTranslations();
-  return {
-    title: t('metadata.contact.title'),
-    description: t('metadata.contact.description'),
-  };
+  return getPageMetadata('/contact', 'metadata.contact.title', 'metadata.contact.description');
 }
 
 const ContactLayout = async ({ children }: Props) => {

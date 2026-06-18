@@ -1,4 +1,15 @@
 import type { Translator } from '@/lib/i18n/get-dictionary';
+import type { GarageDoorMotorType } from '@/lib/garage-door-motors';
+import {
+  getGarageDoorMotorLabel,
+  isGarageDoorMotorType,
+} from '@/lib/garage-door-motors';
+import {
+  calculateRackiTendiTotal,
+  getRackiTendiLengthLabel,
+  getRackiTendiUnitPrice,
+  type RackiTendiLength,
+} from '@/lib/racki-tendi-data';
 import { getMotorVariantLabel } from '@/lib/motori-porti-data';
 import type { OrderProduct } from '@/lib/orders';
 import {
@@ -69,6 +80,23 @@ export function buildOrderReviewRows(
         value: `${railMeters} m × ${formatEur(pricing.railPerMeterEur)}/m = ${formatEur(railMeters * pricing.railPerMeterEur)}`,
       });
     }
+  } else if (product === 'racki-tendi') {
+    const length = payload.rackiTendiLength as RackiTendiLength;
+    const quantity = Number(payload.quantity ?? 0);
+    const unitPrice = getRackiTendiUnitPrice(length);
+
+    rows.push({
+      label: t('orders.reviewLabels.length'),
+      value: getRackiTendiLengthLabel(length, t),
+    });
+    rows.push({
+      label: t('orders.reviewLabels.unitPrice'),
+      value: formatEur(unitPrice),
+    });
+    rows.push({
+      label: t('orders.reviewLabels.quantity'),
+      value: String(quantity),
+    });
   } else if (product === 'pergoli') {
     rows.push({
       label: t('orders.reviewLabels.dimensions'),
@@ -88,7 +116,15 @@ export function buildOrderReviewRows(
     });
   }
 
-  if (payload.motorRequested !== undefined) {
+  if (payload.garageDoorMotor && isGarageDoorMotorType(String(payload.garageDoorMotor))) {
+    rows.push({
+      label: t('orders.reviewLabels.motor'),
+      value: getGarageDoorMotorLabel(
+        payload.garageDoorMotor as GarageDoorMotorType,
+        t,
+      ),
+    });
+  } else if (payload.motorRequested !== undefined) {
     rows.push({
       label: t('orders.reviewLabels.motorRequested'),
       value: payload.motorRequested
@@ -152,11 +188,20 @@ export function buildOrderReviewRows(
 export function getOrderReviewTotal(
   payload: Record<string, unknown>,
 ): number | null {
-  if (payload.product !== 'motori-porti') return null;
+  if (payload.product === 'motori-porti') {
+    return calculateMotoriPortiTotal(
+      payload.motorVariant as MotorVariant,
+      payload.mounting === true,
+      Number(payload.railMeters ?? 0),
+    );
+  }
 
-  return calculateMotoriPortiTotal(
-    payload.motorVariant as MotorVariant,
-    payload.mounting === true,
-    Number(payload.railMeters ?? 0),
-  );
+  if (payload.product === 'racki-tendi') {
+    return calculateRackiTendiTotal(
+      payload.rackiTendiLength as RackiTendiLength,
+      Number(payload.quantity ?? 0),
+    );
+  }
+
+  return null;
 }

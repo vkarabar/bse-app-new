@@ -10,17 +10,20 @@ export function getDictionary(locale: Locale): Dictionary {
   return dictionaries[locale];
 }
 
-type NestedValue = string | { [key: string]: NestedValue };
-
-function resolveKey(source: NestedValue, key: string): string | undefined {
+function resolveKey(source: unknown, key: string): string | undefined {
   const parts = key.split('.');
-  let current: NestedValue | undefined = source;
+  let current: unknown = source;
 
   for (const part of parts) {
-    if (typeof current !== 'object' || current === null) {
+    if (
+      typeof current !== 'object' ||
+      current === null ||
+      Array.isArray(current)
+    ) {
       return undefined;
     }
-    current = current[part];
+
+    current = (current as Record<string, unknown>)[part];
   }
 
   return typeof current === 'string' ? current : undefined;
@@ -31,7 +34,7 @@ export function createTranslator(dictionary: Dictionary) {
     key: string,
     params?: Record<string, string | number>,
   ): string {
-    const value = resolveKey(dictionary as NestedValue, key) ?? key;
+    const value = resolveKey(dictionary, key) ?? key;
 
     if (!params) {
       return value;

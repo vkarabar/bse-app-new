@@ -11,7 +11,8 @@
     "pvcCurtains": "PVC Magnetic Curtains",
     "wifiControllers": "Wi-Fi Controllers",
     "garageDoorMotors": "Garage Door Motors",
-    "components": "Components"
+    "components": "Components",
+    "awningCranks": "Awning Crank Handles"
   },
   "footer": {
     "copyright": "© {year} BSE Kompani, all rights reserved.",
@@ -67,13 +68,42 @@
       "title": "Products | BSE Kompani",
       "description": "BSE Kompani has been operating since 2013 and from the very beginning has been focused on providing quality services in the industry while keeping prices low."
     },
-    "vrati": { "title": "Garage Doors | BSE Kompani", "description": "BSE Kompani - Roll-up garage doors, manufacturing and installation." },
-    "pergoli": { "title": "Aluminum Pergolas | BSE Kompani", "description": "BSE Kompani - aluminum pergolas, manufacturing and installation." },
-    "zavesi": { "title": "PVC Magnetic Curtains | BSE Kompani", "description": "BSE Kompani - PVC magnetic curtains." },
-    "kontroleri": { "title": "Wi-Fi Controllers | BSE Kompani", "description": "BSE Kompani - Wi-Fi controllers." },
-    "motoriVrati": { "title": "Garage Door Motors | BSE Kompani", "description": "BSE Kompani - garage door motors." },
-    "motoriPorti": { "title": "Sliding Gate Motors | BSE Kompani", "description": "BSE Kompani - sliding gate motors." },
-    "komponenti": { "title": "Components | BSE Kompani", "description": "BSE Kompani - components for garage doors and gates." }
+    "vrati": {
+      "title": "Garage Doors | BSE Kompani",
+      "description": "BSE Kompani - Roll-up garage doors, manufacturing and installation."
+    },
+    "pergoli": {
+      "title": "Aluminum Pergolas | BSE Kompani",
+      "description": "BSE Kompani - aluminum pergolas, manufacturing and installation."
+    },
+    "zavesi": {
+      "title": "PVC Magnetic Curtains | BSE Kompani",
+      "description": "BSE Kompani - PVC magnetic curtains."
+    },
+    "kontroleri": {
+      "title": "Wi-Fi Controllers | BSE Kompani",
+      "description": "BSE Kompani - Wi-Fi controllers."
+    },
+    "motoriVrati": {
+      "title": "Garage Door Motors | BSE Kompani",
+      "description": "BSE Kompani - garage door motors."
+    },
+    "motoriPorti": {
+      "title": "Sliding Gate Motors | BSE Kompani",
+      "description": "BSE Kompani - sliding gate motors."
+    },
+    "komponenti": {
+      "title": "Components | BSE Kompani",
+      "description": "BSE Kompani - components for garage doors and gates."
+    },
+    "rackiTendi": {
+      "title": "Awning Crank Handles | BSE Kompani",
+      "description": "BSE Kompani - crank handles for manually opening and closing awnings and sunshades."
+    },
+    "og": {
+      "tagline": "Garage doors, Pergolas, Motors",
+      "subtitle": "Sales · Manufacturing · Installation"
+    }
   },
   "breadcrumb": {
     "home": "Home",
@@ -86,6 +116,7 @@
     "motoriVrati": "Garage Door Motors",
     "motoriPorti": "Sliding Gate Motors",
     "komponenti": "Components",
+    "rackiTendi": "Awning Crank Handles",
     "about": "About Us"
   },
   "common": {
@@ -211,15 +242,15 @@
         "offer": {
           "number": "03",
           "duration": "Within 24 hours",
-          "title": "Official Quote",
+          "title": "You Receive a Quote",
           "description": "You receive a clear quote with price, timeline, and scope — product, delivery, and installation.",
           "note": "✓ Fixed price"
         },
         "install": {
           "number": "04",
           "duration": "2–3 days",
-          "title": "Installation and Handover",
-          "description": "After order confirmation, our team installs, tests, and delivers the solution ready for use.",
+          "title": "Installation and Completion",
+          "description": "After order confirmation, our team installs, tests, and leaves the solution ready for use.",
           "note": "✓ 3-year warranty"
         }
       }
@@ -248,7 +279,7 @@
     "wizard": {
       "sectionLabel": "05.",
       "title": "Configure and Request a Quote",
-      "subtitle": "Go through 4 simple steps — choose options, enter dimensions, pick a color, and leave your contact details."
+      "subtitle": "Go through 5 simple steps — motor, options, dimensions, color, and contact."
     },
     "gallery": {
       "sectionLabel": "07.",
@@ -340,7 +371,9 @@
         }
       },
       "faq": {
-        "warranty": { "answer": "Garage doors and components come with a 3-year warranty." }
+        "warranty": {
+          "answer": "Garage doors and components come with a 3-year warranty."
+        }
       }
     },
     "pergoli": {
@@ -368,7 +401,9 @@
         }
       },
       "faq": {
-        "warranty": { "answer": "The warranty for pergolas is 3 years from the date of installation." }
+        "warranty": {
+          "answer": "The warranty for pergolas is 3 years from the date of installation."
+        }
       }
     },
     "zavesi": {
@@ -423,6 +458,43 @@
         "range": {
           "question": "What is the range of the controller?",
           "answer": "The controllers have an antenna with high-frequency signals that cover large distances."
+        }
+      }
+    },
+    "rackiTendi": {
+      "title": "Awning Crank Handles",
+      "intro": {
+        "p1": "Awning crank handles are used to manually open and close awnings, sunshades, and marquees. They are made from solid metal with an ergonomic grip for easy everyday use.",
+        "p2": "Available in several lengths — choose the size that fits your awning. Prices are listed clearly per length."
+      },
+      "lengths": {
+        "1m": "1 m",
+        "1.2m": "1.2 m",
+        "1.5m": "1.5 m",
+        "1.8m": "1.8 m",
+        "2m": "2 m"
+      },
+      "pricing": {
+        "title": "Price list",
+        "lengthColumn": "Length",
+        "priceColumn": "Price",
+        "tierShort": "1 m, 1.2 m, 1.5 m",
+        "tierLong": "1.8 m, 2 m"
+      },
+      "benefits": {
+        "durable": {
+          "title": "Durable materials",
+          "text": "Solid construction and quality finish for everyday outdoor use."
+        },
+        "smooth": {
+          "title": "Easy operation",
+          "text": "Ergonomic handle and smooth mechanism for quick raising and lowering of the awning."
+        }
+      },
+      "faq": {
+        "compatibility": {
+          "question": "Are they universal?",
+          "answer": "These are standard crank handles that fit most awnings and sunshades. If you are unsure about the length, contact us and we will help you choose."
         }
       }
     },
@@ -602,7 +674,7 @@
     "gray": "Gray",
     "anthracite": "Anthracite",
     "white": "White",
-    "oak": "Oak",
+    "oak": "Golden Oak",
     "red": "Red",
     "brown": "Brown",
     "yellow": "Yellow",
@@ -618,6 +690,7 @@
       "descriptionPergoli": "Choose dimensions and color — we will reply with a price and installation timeline.",
       "descriptionZavesi": "Enter dimensions and color — we will reply with a price and installation timeline.",
       "descriptionMotoriPorti": "Choose options — prices are shown below. We will contact you to confirm.",
+      "descriptionRackiTendi": "Choose length and quantity — the price is calculated instantly. We will contact you to confirm your order.",
       "titleQuote": "Request a Quote",
       "titleOrder": "Place Order",
       "submitQuote": "Request Quote",
@@ -647,6 +720,12 @@
         "estimatedTotal": "Estimated total:",
         "total": "Total:"
       },
+      "rackiTendi": {
+        "lengthLabel": "Handle length",
+        "lengthPlaceholder": "Select length",
+        "quantityLabel": "Quantity",
+        "estimatedTotal": "Estimated total:"
+      },
       "dimensions": "Dimensions",
       "width": "Width (cm)",
       "height": "Height (cm)",
@@ -675,7 +754,8 @@
       "vrati": "Roll-up garage door",
       "pergoli": "Aluminum pergola",
       "zavesi": "PVC magnetic curtain",
-      "motori-porti": "Sliding gate motor"
+      "motori-porti": "Sliding gate motor",
+      "racki-tendi": "Awning crank handle"
     },
     "reviewLabels": {
       "product": "Product",
@@ -699,7 +779,10 @@
       "motorRequested": "Motor",
       "mountingRequested": "Installation",
       "installTimeline": "Install timeline",
-      "remoteCount": "Remote controls"
+      "remoteCount": "Remote controls",
+      "length": "Length",
+      "unitPrice": "Unit price",
+      "quantity": "Quantity"
     },
     "validation": {
       "invalidData": "Invalid data.",
@@ -714,7 +797,10 @@
       "heightRequired": "Please enter a valid height (1–2000 cm).",
       "dimensionRequired": "Please select dimensions (3 × 3 m or 4 × 3 m).",
       "invalidMotorVariant": "Invalid motor type.",
-      "invalidRailMeters": "Please enter a valid rail length (0–100 m)."
+      "invalidGarageDoorMotor": "Please select a garage door motor type.",
+      "invalidRailMeters": "Please enter a valid rail length (0–100 m).",
+      "invalidRackiTendiLength": "Please select a valid handle length.",
+      "invalidQuantity": "Please enter a valid quantity (1–999)."
     }
   },
   "pricing": {
@@ -729,17 +815,47 @@
   "wizard": {
     "garageDoor": {
       "title": "Configure Your Garage Door",
-      "subtitle": "4 steps to a free quote — no registration and no obligation.",
+      "subtitle": "5 steps to a free quote — no registration and no obligation.",
       "steps": {
-        "options": "Options",
+        "motor": "Motor",
+        "setup": "Options",
         "dimensions": "Dimensions",
         "style": "Color",
         "contact": "Contact"
       },
+      "motor": {
+        "title": "Choose a motor",
+        "subtitle": "A motor is included in the quote — pick the type.",
+        "priceNote": "The quote price depends on the motor type. You will receive the exact price after submitting your request."
+      },
+      "setup": {
+        "title": "Installation and remotes",
+        "subtitle": "Choose installation and how many remote controls you need."
+      },
       "options": {
         "title": "Choose Options",
-        "subtitle": "Select installation and number of remotes — the automatic motor is always included.",
-        "motorIncluded": "The automatic motor is always included in the quote.",
+        "subtitle": "Choose motor type, installation, and number of remotes.",
+        "motorIncluded": "A motor is always included in the quote — choose the type.",
+        "motor": {
+          "label": "Motor type",
+          "types": {
+            "standard": {
+              "title": "Standard motor",
+              "description": "Classic motor for everyday garage door use.",
+              "priceHint": "Standard price"
+            },
+            "fast": {
+              "title": "Fast motor with motion sensors",
+              "description": "Higher opening and closing speed, with motion sensors for added safety.",
+              "priceHint": "Higher safety and speed"
+            },
+            "load-sensor": {
+              "title": "Motor with physical load sensor",
+              "description": "Detects resistance while closing — the door stops to prevent damage.",
+              "priceHint": "Prevent damage"
+            }
+          }
+        },
         "mounting": {
           "label": "Installation",
           "with": {
@@ -756,7 +872,7 @@
           "subtitle": "How many remote controls do you need in total?",
           "includedInPrice": "The garage door price includes {count} remote controls. Additional remotes are charged extra.",
           "includedOption": "{count} (included)",
-          "more": "More",
+          "more": "More than 4",
           "customLabel": "Custom number",
           "customPlaceholder": "e.g. 10",
           "customHint": "Enter a number from {min} to {max} (for larger buildings)."

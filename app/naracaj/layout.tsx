@@ -1,15 +1,8 @@
 import type { Metadata } from 'next';
-import { getLocale } from '@/lib/i18n/get-locale';
-import { getDictionary, createTranslator } from '@/lib/i18n/get-dictionary';
+import { getPageMetadata } from '@/lib/get-page-metadata';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
-  const t = createTranslator(getDictionary(locale));
-
-  return {
-    title: t('metadata.naracaj.title'),
-    description: t('metadata.naracaj.description'),
-  };
+  return getPageMetadata('/naracaj', 'metadata.naracaj.title', 'metadata.naracaj.description');
 }
 
 export default function NaracajLayout({

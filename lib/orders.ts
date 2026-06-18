@@ -15,11 +15,28 @@ import {
   getMotoriPortiPricing,
 } from '@/lib/order-pricing';
 import {
+  getGarageDoorMotorLabel,
+  isGarageDoorMotorType,
+  type GarageDoorMotorType,
+} from '@/lib/garage-door-motors';
+import {
   getMotorVariantLabel,
   type MotorVariant,
 } from '@/lib/motori-porti-data';
 
-export type OrderProduct = 'vrati' | 'pergoli' | 'zavesi' | 'motori-porti';
+import {
+  calculateRackiTendiTotal,
+  getRackiTendiLengthLabel,
+  isRackiTendiLength,
+  type RackiTendiLength,
+} from '@/lib/racki-tendi-data';
+
+export type OrderProduct =
+  | 'vrati'
+  | 'pergoli'
+  | 'zavesi'
+  | 'motori-porti'
+  | 'racki-tendi';
 
 export type OrderPayload = {
   product: OrderProduct;
@@ -31,9 +48,12 @@ export type OrderPayload = {
   mounting?: boolean;
   railMeters?: number;
   motorRequested?: boolean;
+  garageDoorMotor?: GarageDoorMotorType;
   mountingRequested?: boolean;
   installTimeline?: string;
   remoteCount?: number;
+  rackiTendiLength?: RackiTendiLength;
+  quantity?: number;
   name: string;
   phone: string;
   email: string;
@@ -95,6 +115,47 @@ export function getMotoriPortiTotal(order: OrderPayload): number | null {
     !!order.mounting,
     order.railMeters ?? 0,
   );
+}
+
+export function getRackiTendiOrderTotal(order: OrderPayload): number | null {
+  if (
+    order.product !== 'racki-tendi' ||
+    !order.rackiTendiLength ||
+    order.quantity === undefined
+  ) {
+    return null;
+  }
+
+  return calculateRackiTendiTotal(order.rackiTendiLength, order.quantity);
+}
+
+export function getOrderTotal(order: OrderPayload): number | null {
+  if (order.product === 'motori-porti') {
+    return getMotoriPortiTotal(order);
+  }
+
+  if (order.product === 'racki-tendi') {
+    return getRackiTendiOrderTotal(order);
+  }
+
+  return null;
+}
+
+export function formatRackiTendiSummary(
+  order: OrderPayload,
+  t: Translator,
+): string {
+  if (!order.rackiTendiLength || order.quantity === undefined) return '';
+
+  const unitPrice = calculateRackiTendiTotal(order.rackiTendiLength, 1);
+  const total = calculateRackiTendiTotal(order.rackiTendiLength, order.quantity);
+
+  return [
+    `${t('orders.reviewLabels.length')}: ${getRackiTendiLengthLabel(order.rackiTendiLength, t)}`,
+    `${t('orders.reviewLabels.unitPrice')}: ${formatEur(unitPrice)}`,
+    `${t('orders.reviewLabels.quantity')}: ${order.quantity}`,
+    `${t('orders.reviewLabels.total')}: ${formatEur(total)}`,
+  ].join('\n');
 }
 
 export function formatMotoriPortiSummary(
@@ -207,6 +268,15 @@ function parseRemoteCount(value: unknown): number | undefined {
   return count;
 }
 
+function parseQuantity(value: unknown): number | undefined {
+  if (value === undefined || value === null || value === '') return undefined;
+  const quantity = Number(value);
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 999) {
+    return undefined;
+  }
+  return quantity;
+}
+
 function parseDimensions(body: Record<string, unknown>, t: Translator) {
   const width = Number(body.width);
   const height = Number(body.height);
@@ -241,7 +311,8 @@ export function validateOrderPayload(
     product !== 'vrati' &&
     product !== 'pergoli' &&
     product !== 'zavesi' &&
-    product !== 'motori-porti'
+    product !== 'motori-porti' &&
+    product !== 'racki-tendi'
   ) {
     return { ok: false, error: t('orders.validation.invalidProduct') };
   }
@@ -250,6 +321,36 @@ export function validateOrderPayload(
   if (!contact.ok) return contact;
 
   const { name, phone, email, city, notes } = contact;
+
+  if (product === 'racki-tendi') {
+    const rackiTendiLength = String(body.rackiTendiLength ?? '').trim();
+    const quantity = parseQuantity(body.quantity);
+
+    if (!isRackiTendiLength(rackiTendiLength)) {
+      return {
+        ok: false,
+        error: t('orders.validation.invalidRackiTendiLength'),
+      };
+    }
+
+    if (quantity === undefined) {
+      return { ok: false, error: t('orders.validation.invalidQuantity') };
+    }
+
+    return {
+      ok: true,
+      payload: {
+        product: 'racki-tendi',
+        rackiTendiLength,
+        quantity,
+        name,
+        phone,
+        email,
+        city,
+        notes,
+      },
+    };
+  }
 
   if (PRODUCTS_WITH_COLOR.includes(product as ProductWithColor)) {
     const colorRaw = String(body.color ?? '').trim();
@@ -274,6 +375,18 @@ export function validateOrderPayload(
       const dimensions = parseDimensions(body, t);
       if (!dimensions.ok) return dimensions;
 
+      const garageDoorMotorRaw = String(body.garageDoorMotor ?? '').trim();
+      const garageDoorMotor = garageDoorMotorRaw as GarageDoorMotorType;
+      if (
+        product === 'vrati' &&
+        !isGarageDoorMotorType(garageDoorMotorRaw)
+      ) {
+        return {
+          ok: false,
+          error: t('orders.validation.invalidGarageDoorMotor'),
+        };
+      }
+
       return {
         ok: true,
         payload: {
@@ -282,6 +395,8 @@ export function validateOrderPayload(
           height: dimensions.height,
           color,
           motorRequested: parseOptionalBoolean(body.motorRequested),
+          garageDoorMotor:
+            product === 'vrati' ? garageDoorMotor : undefined,
           mountingRequested: parseOptionalBoolean(body.mountingRequested),
           installTimeline: parseInstallTimeline(body.installTimeline),
           remoteCount: parseRemoteCount(body.remoteCount),

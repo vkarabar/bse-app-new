@@ -43,6 +43,11 @@ const PRODUCTS = [
     labelKey: 'nav.garageDoorMotors' as const,
   },
   {
+    href: '/proizvodi/racki-tendi',
+    iconSrc: '/racki-tendi/racki-tendi.jpg',
+    labelKey: 'nav.awningCranks' as const,
+  },
+  {
     href: '/proizvodi/komponenti',
     iconSrc: '/komponenti.png',
     labelKey: 'nav.components' as const,

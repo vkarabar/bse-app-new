@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/hover-card';
 import { useTranslations } from '@/components/locale-provider';
 import type { ColorSwatchItem } from '@/lib/product-colors';
+import { getSwatchStyle } from '@/lib/product-colors';
 import { cn } from '@/lib/utils';
 
 export type { ColorSwatchItem };
@@ -36,7 +37,7 @@ function SwatchButton({
         selected && 'ring-2 ring-sky-500 ring-offset-2',
         className,
       )}
-      style={{ backgroundColor: color.hex }}
+      style={getSwatchStyle(color)}
       aria-label={label}
       aria-pressed={selected}
     />

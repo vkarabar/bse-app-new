@@ -33,7 +33,10 @@ const ITALIAN_PACKAGE_INCLUDE_KEYS = [
   'pricing.italianPackageIncludes.item5',
 ] as const;
 
-export const PRODUCTS_WITH_FIXED_PRICE: OrderProduct[] = ['motori-porti'];
+export const PRODUCTS_WITH_FIXED_PRICE: OrderProduct[] = [
+  'motori-porti',
+  'racki-tendi',
+];
 
 export function productHasFixedPrice(product: OrderProduct): boolean {
   return PRODUCTS_WITH_FIXED_PRICE.includes(product);

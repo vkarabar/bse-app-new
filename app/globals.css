@@ -12,7 +12,7 @@ body,
 
 @media (min-width: 768px) {
   :root {
-    --site-header-offset: 0px;
+    --site-header-offset: 5rem;
   }
 }
 

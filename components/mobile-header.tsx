@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { MobileSidebar } from './mobile-sidebar';
 import { LocaleSwitcher } from './locale-switcher';
-import { LocalizedLink } from './localized-link';
+import { LogoLink } from './logo-link';
 
 export const MobileHeader = () => {
   return (
@@ -9,10 +9,7 @@ export const MobileHeader = () => {
       <div className="justify-self-start">
         <LocaleSwitcher compact />
       </div>
-      <LocalizedLink
-        href="/"
-        className="justify-self-center"
-      >
+      <LogoLink className="justify-self-center">
         <Image
           src="/BSE_NEW.svg"
           width={56}
@@ -20,7 +17,7 @@ export const MobileHeader = () => {
           alt="logo"
           className="mt-[2px]"
         />
-      </LocalizedLink>
+      </LogoLink>
       <div className="justify-self-end mt-1.5">
         <MobileSidebar />
       </div>

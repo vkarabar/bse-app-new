@@ -8,10 +8,28 @@ import { ProcessStepsSection } from '@/components/process-steps-section';
 import { HomeFaqSection } from '@/components/home-faq-section';
 import { HomeFinalCta } from '@/components/home-final-cta';
 import { HomeGallerySection } from '@/components/home-gallery-section';
-import { GarageDoorOrderWizard } from '@/components/garage-door-order-wizard';
+import { HomeGarageDoorWizard } from '@/components/home-garage-door-wizard';
+import { getPageMetadata } from '@/lib/get-page-metadata';
 import { getServerTranslations } from '@/lib/i18n/get-server-translations';
+import {
+  HOME_GARAGE_GALLERY_IDS,
+  HOME_HERO_DOOR_IDS,
+  HOME_VRATI_SLIDER_IDS,
+  garageDoorImageSrc,
+  toGarageDoorSliderItems,
+  toPergolaSliderItems,
+} from '@/lib/product-gallery-images';
+import type { Metadata } from 'next';
 
 const iskustvo = new Date().getFullYear() - 2013;
+
+export async function generateMetadata(): Promise<Metadata> {
+  return getPageMetadata(
+    '/',
+    'metadata.home.title',
+    'metadata.home.description',
+  );
+}
 
 export default async function Home() {
   const { t, dictionary } = await getServerTranslations();
@@ -36,23 +54,13 @@ export default async function Home() {
     },
   ];
 
-  const slikiHeader = [1, 3, 4, 5, 5].map((id, index) => ({
-    id: index + 1,
-    title: t('home.slider.garageDoor'),
-    imageSrc: [
-      `/vrati/vrata1.jpg`,
-      `/vrati/vrata4.jpg`,
-      `/vrati/vrata7.jpg`,
-      `/vrati/vrata8.jpg`,
-      `/vrati/vrata10.jpg`,
-    ][index],
-  }));
+  const slikiHeader = toGarageDoorSliderItems(HOME_HERO_DOOR_IDS, () =>
+    t('home.slider.garageDoor'),
+  );
 
-  const slikiVrati = [8, 7, 3, 4, 5, 10, 1].map((num, index) => ({
-    id: index + 1,
-    title: t('home.slider.garageDoorNumbered', { number: index + 1 }),
-    imageSrc: `/vrati/vrata${num}.jpg`,
-  }));
+  const slikiVrati = toGarageDoorSliderItems(HOME_VRATI_SLIDER_IDS, (number) =>
+    t('home.slider.garageDoorNumbered', { number }),
+  );
 
   const slikiMotori = [
     {
@@ -73,11 +81,9 @@ export default async function Home() {
     imageSrc: `/zavesi/mz${num}.jpg`,
   }));
 
-  const slikiPergoli = [1, 2].map((num, index) => ({
-    id: index + 1,
-    title: t('home.slider.pergolaNumbered', { number: index === 0 ? 1 : 1 }),
-    imageSrc: `/pergoli/pg${num}.jpg`,
-  }));
+  const slikiPergoli = toPergolaSliderItems((number) =>
+    t('home.slider.pergolaNumbered', { number }),
+  );
 
   const homeProducts = [
     {
@@ -195,14 +201,14 @@ export default async function Home() {
 
   const finalCtaBullets = dictionary.home.finalCta.bullets;
 
-  const galleryImages = [1, 4, 7, 8, 10, 3].map((num, index) => ({
-    src: `/vrati/vrata${num}.jpg`,
+  const galleryImages = HOME_GARAGE_GALLERY_IDS.map((num, index) => ({
+    src: garageDoorImageSrc(num),
     alt: t('home.slider.garageDoorNumbered', { number: index + 1 }),
     caption: t('home.slider.garageDoorNumbered', { number: index + 1 }),
   }));
 
   return (
-    <div className="mx-auto bg-slate-800">
+    <div className="mx-auto bg-slate-800 md:-mt-[var(--site-header-offset)] md:pt-[var(--site-header-offset)]">
       <PromoMarquee items={marqueeItems} />
 
       <div className="containerr text-slate-200 px-5 md:px-8 pt-10 md:pt-0 pb-6 md:pb-16">
@@ -223,7 +229,7 @@ export default async function Home() {
             <div className="hero-fade-up hero-fade-up-delay-3 mt-8 flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-3">
               <LocalizedLink
                 href="/naracaj"
-                className="btn-main-inv w-full sm:w-auto text-center md:px-7 md:py-1.5 md:text-base"
+                className="btn-main-inv w-full sm:w-auto text-center md:px-7 md:py-1.5 md:text-base text-zinc-950"
               >
                 {t('home.hero.ctaQuote')}
               </LocalizedLink>
@@ -453,7 +459,7 @@ export default async function Home() {
               {t('home.wizard.subtitle')}
             </p>
             <div className="mt-8">
-              <GarageDoorOrderWizard />
+              <HomeGarageDoorWizard />
             </div>
           </section>
 

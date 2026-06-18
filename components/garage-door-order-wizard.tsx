@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
 import { ColorSwatchPicker } from '@/components/color-swatches';
@@ -14,16 +14,21 @@ import {
 } from '@/components/ui/dialog';
 import { useTranslations } from '@/components/locale-provider';
 import { VRATI_COLORS, type ColorKey } from '@/lib/product-colors';
+import {
+  GARAGE_DOOR_MOTOR_OPTIONS,
+  type GarageDoorMotorType,
+} from '@/lib/garage-door-motors';
 import { postJsonApi } from '@/lib/post-json-api';
 import { cn } from '@/lib/utils';
 import { useWizardStepScroll } from '@/hooks/use-wizard-step-scroll';
 import { useScrollIntoViewWhen } from '@/hooks/use-scroll-into-view-when';
 
-type StepId = 'options' | 'dimensions' | 'style' | 'contact';
+type StepId = 'motor' | 'setup' | 'dimensions' | 'style' | 'contact';
 
 type InstallTimeline = 'asap' | '30days' | '2-3months' | 'exploring';
 
 type WizardState = {
+  garageDoorMotor: GarageDoorMotorType | '';
   mountingRequested: boolean;
   remoteCount: number;
   remoteCountIsCustom: boolean;
@@ -39,7 +44,7 @@ type WizardState = {
   notes: string;
 };
 
-const STEPS: StepId[] = ['options', 'dimensions', 'style', 'contact'];
+const STEPS: StepId[] = ['motor', 'setup', 'dimensions', 'style', 'contact'];
 const REMOTE_PRESET_OPTIONS = [2, 3, 4] as const;
 const INCLUDED_REMOTE_COUNT = 2;
 const CUSTOM_REMOTE_MIN = 5;
@@ -115,44 +120,78 @@ const inputClassName =
 type Props = {
   className?: string;
   showHeader?: boolean;
+  onProgressChange?: (inProgress: boolean) => void;
 };
 
 function OptionCard({
   title,
   description,
+  meta,
   selected,
   onClick,
+  compact = false,
 }: {
   title: string;
   description: string;
+  meta?: string;
   selected: boolean;
   onClick: () => void;
+  compact?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'w-full rounded-xl border-2 p-5 text-left transition-all duration-200',
+        'w-full rounded-xl border-2 text-left transition-all duration-200',
+        compact ? 'p-3 md:p-5' : 'p-5',
         selected
           ? 'border-sky-500 bg-sky-50 shadow-sm'
           : 'border-slate-200 bg-white hover:border-sky-300 hover:bg-slate-50',
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="font-semibold text-slate-800">{title}</p>
-          <p className="mt-1 text-sm text-slate-600">{description}</p>
+        <div className="min-w-0">
+          <p
+            className={cn(
+              'font-semibold text-slate-800',
+              compact && 'text-sm md:text-base',
+            )}
+          >
+            {title}
+          </p>
+          {meta ? (
+            <p
+              className={cn(
+                'mt-0.5 font-medium text-sky-700',
+                compact ? 'text-xs' : 'text-sm',
+              )}
+            >
+              {meta}
+            </p>
+          ) : null}
+          <p
+            className={cn(
+              'mt-1 text-slate-600',
+              compact ? 'text-xs md:text-sm' : 'text-sm',
+              compact && !selected && 'hidden md:block',
+            )}
+          >
+            {description}
+          </p>
         </div>
         <span
           className={cn(
-            'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
+            'flex shrink-0 items-center justify-center rounded-full border-2 transition-colors',
+            compact ? 'h-5 w-5 md:h-6 md:w-6' : 'h-6 w-6',
             selected
               ? 'border-sky-500 bg-sky-500 text-white'
               : 'border-slate-300 bg-white',
           )}
         >
-          {selected ? <Check className="h-3.5 w-3.5" /> : null}
+          {selected ? (
+            <Check className={compact ? 'h-3 w-3 md:h-3.5 md:w-3.5' : 'h-3.5 w-3.5'} />
+          ) : null}
         </span>
       </div>
     </button>
@@ -231,7 +270,28 @@ function DimensionControl({
   );
 }
 
+function getMotorPreviewLabel(
+  state: WizardState,
+  t: (key: string) => string,
+): string {
+  if (state.garageDoorMotor) {
+    return t(
+      `wizard.garageDoor.options.motor.types.${state.garageDoorMotor}.title`,
+    );
+  }
+
+  return t('wizard.garageDoor.preview.motorBadge');
+}
+
 const WIZARD_STICKY_TOP = 'lg:top-20';
+
+function stepIndexOf(step: StepId): number {
+  return STEPS.indexOf(step);
+}
+
+function isStepAtOrAfter(current: StepId, target: StepId): boolean {
+  return stepIndexOf(current) >= stepIndexOf(target);
+}
 
 type SummaryRow = { label: string; value: string };
 
@@ -250,30 +310,31 @@ function buildGarageDoorSummaryRows(
     },
     {
       label: t('wizard.garageDoor.summary.motor'),
-      value: t('wizard.garageDoor.summary.included'),
-      show: true,
+      value: state.garageDoorMotor
+        ? t(`wizard.garageDoor.options.motor.types.${state.garageDoorMotor}.title`)
+        : '—',
+      show: !!state.garageDoorMotor,
     },
     {
       label: t('wizard.garageDoor.summary.mounting'),
       value: state.mountingRequested
         ? t('wizard.garageDoor.summary.yes')
         : t('wizard.garageDoor.summary.no'),
-      show: true,
+      show: isStepAtOrAfter(currentStep, 'setup'),
     },
     {
       label: t('wizard.garageDoor.summary.remotes'),
       value: String(effectiveRemoteCount),
-      show: currentStep !== 'options' || isRemoteCountValid(state),
+      show:
+        isStepAtOrAfter(currentStep, 'setup') &&
+        (currentStep !== 'setup' || isRemoteCountValid(state)),
     },
     {
       label: t('wizard.garageDoor.summary.dimensions'),
       value: areDimensionsValid(state.width, state.height)
         ? `${parseDimensionInput(state.width)} × ${parseDimensionInput(state.height)} cm`
         : '—',
-      show:
-        currentStep === 'dimensions' ||
-        currentStep === 'style' ||
-        currentStep === 'contact',
+      show: isStepAtOrAfter(currentStep, 'dimensions'),
     },
     {
       label: t('wizard.garageDoor.summary.color'),
@@ -350,7 +411,7 @@ function WizardSummary({
           remotesLabel={t('wizard.garageDoor.summary.remotes')}
           previewTitle={t('wizard.garageDoor.preview.title')}
           previewNote={t('wizard.garageDoor.preview.note')}
-          motorLabel={t('wizard.garageDoor.preview.motorBadge')}
+          motorLabel={getMotorPreviewLabel(state, t)}
           mountingLabel={t('wizard.garageDoor.preview.mountingBadge')}
           dimensionsLabel={t('wizard.garageDoor.summary.dimensions')}
           compact
@@ -406,6 +467,7 @@ function WizardSummary({
 export function GarageDoorOrderWizard({
   className,
   showHeader = true,
+  onProgressChange,
 }: Props) {
   const t = useTranslations();
   const wizardRef = useRef<HTMLDivElement>(null);
@@ -416,6 +478,7 @@ export function GarageDoorOrderWizard({
   );
   const [message, setMessage] = useState('');
   const [state, setState] = useState<WizardState>({
+    garageDoorMotor: 'standard',
     mountingRequested: true,
     remoteCount: 2,
     remoteCountIsCustom: false,
@@ -442,6 +505,20 @@ export function GarageDoorOrderWizard({
   useWizardStepScroll(stepIndex, wizardRef);
   useScrollIntoViewWhen(status === 'success', successRef);
 
+  useEffect(() => {
+    if (!onProgressChange) return;
+
+    const inProgress =
+      stepIndex > 0 || status === 'loading' || status === 'success';
+    onProgressChange(inProgress);
+  }, [stepIndex, status, onProgressChange]);
+
+  useEffect(() => {
+    if (!onProgressChange) return;
+
+    return () => onProgressChange(false);
+  }, [onProgressChange]);
+
   const stepLabels = STEPS.map((step) => t(`wizard.garageDoor.steps.${step}`));
 
   const timelineOptions: { value: InstallTimeline; label: string }[] = [
@@ -466,7 +543,9 @@ export function GarageDoorOrderWizard({
 
   function canProceedFromStep(step: StepId): boolean {
     switch (step) {
-      case 'options':
+      case 'motor':
+        return !!state.garageDoorMotor;
+      case 'setup':
         return isRemoteCountValid(state);
       case 'dimensions':
         return areDimensionsValid(state.width, state.height);
@@ -526,6 +605,7 @@ export function GarageDoorOrderWizard({
       height: parseDimensionInput(state.height) ?? DEFAULT_HEIGHT,
       color: state.color,
       motorRequested: true,
+      garageDoorMotor: state.garageDoorMotor as GarageDoorMotorType,
       mountingRequested: state.mountingRequested,
       remoteCount: getEffectiveRemoteCount(state),
       installTimeline: state.installTimeline,
@@ -571,6 +651,7 @@ export function GarageDoorOrderWizard({
     setStatus('idle');
     setMessage('');
     setState({
+      garageDoorMotor: 'standard',
       mountingRequested: true,
       remoteCount: 2,
       remoteCountIsCustom: false,
@@ -633,15 +714,19 @@ export function GarageDoorOrderWizard({
         </div>
       )}
 
-      <div className="border-b border-slate-100 px-5 py-4 md:px-8">
-        <ol className="flex w-full items-center justify-center gap-2 sm:gap-3">
+      <div className="border-b border-slate-100 px-4 py-3 md:px-8 md:py-4">
+        <p className="mb-2 text-center text-xs font-semibold text-sky-700 md:hidden">
+          {stepIndex + 1}/{STEPS.length} · {stepLabels[stepIndex]}
+        </p>
+        <ol className="flex w-full items-center justify-center gap-1 sm:gap-2 md:gap-3">
           {STEPS.map((step, index) => {
             const isActive = index === stepIndex;
             const isComplete = index < stepIndex;
             const isClickable = canNavigateToStep(index);
 
             const circleClassName = cn(
-              'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-all',
+              'flex shrink-0 items-center justify-center rounded-full font-bold transition-all',
+              'h-7 w-7 text-xs md:h-8 md:w-8 md:text-sm',
               isActive && 'bg-sky-500 text-white',
               isComplete && 'bg-sky-100 text-sky-700',
               isClickable &&
@@ -708,7 +793,7 @@ export function GarageDoorOrderWizard({
         </ol>
       </div>
 
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-6 lg:gap-8 p-5 md:p-8">
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_300px] gap-6 lg:gap-8 p-4 md:p-8">
         <div className="min-w-0">
           <AnimatePresence mode="wait">
             <motion.div
@@ -718,27 +803,57 @@ export function GarageDoorOrderWizard({
               exit={{ opacity: 0, x: -16 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
-              {currentStep === 'options' && (
-                <div className="space-y-5">
+              {currentStep === 'motor' && (
+                <div className="space-y-4 md:space-y-5">
                   <div>
                     <h3 className="text-lg font-bold text-slate-800">
-                      {t('wizard.garageDoor.options.title')}
+                      {t('wizard.garageDoor.motor.title')}
                     </h3>
                     <p className="mt-1 text-sm text-slate-600">
-                      {t('wizard.garageDoor.options.subtitle')}
+                      {t('wizard.garageDoor.motor.subtitle')}
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800">
-                    {t('wizard.garageDoor.options.motorIncluded')}
+                  <p className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2.5 text-xs text-sky-800 md:px-4 md:py-3 md:text-sm">
+                    {t('wizard.garageDoor.motor.priceNote')}
+                  </p>
+
+                  <div className="grid gap-2 md:gap-3">
+                    {GARAGE_DOOR_MOTOR_OPTIONS.map((motor) => (
+                      <OptionCard
+                        key={motor.id}
+                        compact
+                        title={t(motor.titleKey)}
+                        meta={t(motor.priceHintKey)}
+                        description={t(motor.descriptionKey)}
+                        selected={state.garageDoorMotor === motor.id}
+                        onClick={() =>
+                          patchState({ garageDoorMotor: motor.id })
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 'setup' && (
+                <div className="space-y-4 md:space-y-5">
+                  <div>
+                    <h3 className="text-lg font-bold text-slate-800">
+                      {t('wizard.garageDoor.setup.title')}
+                    </h3>
+                    <p className="mt-1 text-sm text-slate-600">
+                      {t('wizard.garageDoor.setup.subtitle')}
+                    </p>
                   </div>
 
                   <fieldset className="space-y-3">
-                    <legend className="block text-sm font-medium text-slate-700 px-1">
+                    <legend className="block px-1 text-sm font-medium text-slate-700">
                       {t('wizard.garageDoor.options.mounting.label')}
                     </legend>
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="grid gap-2 sm:grid-cols-2 md:gap-3">
                       <OptionCard
+                        compact
                         title={t('wizard.garageDoor.options.mounting.with.title')}
                         description={t(
                           'wizard.garageDoor.options.mounting.with.description',
@@ -747,6 +862,7 @@ export function GarageDoorOrderWizard({
                         onClick={() => patchState({ mountingRequested: true })}
                       />
                       <OptionCard
+                        compact
                         title={t('wizard.garageDoor.options.mounting.without.title')}
                         description={t(
                           'wizard.garageDoor.options.mounting.without.description',
@@ -757,17 +873,17 @@ export function GarageDoorOrderWizard({
                     </div>
                   </fieldset>
 
-                  <fieldset className="rounded-xl border border-slate-200 bg-white p-5">
-                    <legend className="block text-sm font-medium text-slate-700 mb-3 px-1">
+                  <fieldset className="rounded-xl border border-slate-200 bg-white p-4 md:p-5">
+                    <legend className="mb-2 block px-1 text-sm font-medium text-slate-700 md:mb-3">
                       {t('wizard.garageDoor.options.remotes.label')}
                     </legend>
-                    <p className="text-sm text-slate-600 mb-3">
-                      {t('wizard.garageDoor.options.remotes.subtitle')}
-                    </p>
-                    <p className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800 mb-4">
-                      {t('wizard.garageDoor.options.remotes.includedInPrice', {
-                        count: INCLUDED_REMOTE_COUNT,
-                      })}
+                    <p className="mb-3 text-xs text-slate-600 md:text-sm">
+                      {t('wizard.garageDoor.options.remotes.subtitle')}{' '}
+                      <span className="text-sky-700">
+                        {t('wizard.garageDoor.options.remotes.includedInPrice', {
+                          count: INCLUDED_REMOTE_COUNT,
+                        })}
+                      </span>
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {REMOTE_PRESET_OPTIONS.map((count) => (
@@ -924,7 +1040,7 @@ export function GarageDoorOrderWizard({
                         remotesLabel={t('wizard.garageDoor.summary.remotes')}
                         previewTitle={t('wizard.garageDoor.preview.title')}
                         previewNote={t('wizard.garageDoor.preview.note')}
-                        motorLabel={t('wizard.garageDoor.preview.motorBadge')}
+                        motorLabel={getMotorPreviewLabel(state, t)}
                         mountingLabel={t('wizard.garageDoor.preview.mountingBadge')}
                         dimensionsLabel={t('wizard.garageDoor.summary.dimensions')}
                       />
@@ -1135,7 +1251,7 @@ export function GarageDoorOrderWizard({
               remotesLabel={t('wizard.garageDoor.summary.remotes')}
               previewTitle={t('wizard.garageDoor.preview.title')}
               previewNote={t('wizard.garageDoor.preview.note')}
-              motorLabel={t('wizard.garageDoor.preview.motorBadge')}
+              motorLabel={getMotorPreviewLabel(state, t)}
               mountingLabel={t('wizard.garageDoor.preview.mountingBadge')}
               dimensionsLabel={t('wizard.garageDoor.summary.dimensions')}
             />

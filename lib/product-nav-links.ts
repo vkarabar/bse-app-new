@@ -6,7 +6,8 @@ export type ProductNavLinkKey =
   | 'pvcCurtains'
   | 'wifiControllers'
   | 'garageDoorMotors'
-  | 'components';
+  | 'components'
+  | 'awningCranks';
 
 export type ProductNavLink = {
   href: string;
@@ -22,5 +23,6 @@ export const PRODUCT_NAV_LINKS: ProductNavLink[] = [
   { href: '/proizvodi/zavesi', key: 'pvcCurtains' },
   { href: '/proizvodi/kontroleri', key: 'wifiControllers' },
   { href: '/proizvodi/motori-vrati', key: 'garageDoorMotors' },
+  { href: '/proizvodi/racki-tendi', key: 'awningCranks' },
   { href: '/proizvodi/komponenti', key: 'components' },
 ];

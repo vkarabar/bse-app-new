@@ -2,8 +2,13 @@
 
 import { motion } from 'framer-motion';
 import { Radio, Settings2, Wrench } from 'lucide-react';
-import { VRATI_COLORS } from '@/lib/product-colors';
+import { useEffect, useRef, useState } from 'react';
+import { VRATI_COLORS, getSwatchStyle } from '@/lib/product-colors';
 import type { ColorKey } from '@/lib/product-colors';
+import {
+  getGarageDoorSlatCount,
+  getGoldenOakSlatLayerStyle,
+} from '@/lib/garage-door-textures';
 import { cn } from '@/lib/utils';
 
 type Props = {
@@ -35,6 +40,25 @@ function isLightColor(hex: string, key: ColorKey | '') {
   return luminance > 0.72;
 }
 
+function buildSlatPattern(
+  slatHeightPx: number,
+  light: boolean,
+): string {
+  const slatHighlight = light ? 0.07 : 0.05;
+  const slatGroove = light ? 0.12 : 0.2;
+
+  return `repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,${slatHighlight}) 0px,
+    rgba(255,255,255,${slatHighlight}) 0.5px,
+    transparent 0.5px,
+    transparent ${slatHeightPx - 1}px,
+    rgba(0,0,0,${slatGroove * 0.45}) ${slatHeightPx - 1}px,
+    rgba(0,0,0,${slatGroove}) ${slatHeightPx - 0.5}px,
+    rgba(0,0,0,${slatGroove * 0.55}) ${slatHeightPx}px
+  )`;
+}
+
 export function GarageDoorPreview({
   width,
   height,
@@ -52,10 +76,39 @@ export function GarageDoorPreview({
   className,
   compact = false,
 }: Props) {
-  const colorHex =
-    VRATI_COLORS.find((item) => item.key === color)?.hex ?? '#94a3b8';
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [panelSize, setPanelSize] = useState({ width: 0, height: 0 });
+
+  const colorConfig = VRATI_COLORS.find((item) => item.key === color);
+  const colorHex = colorConfig?.hex ?? '#94a3b8';
+  const hasWoodTexture = Boolean(colorConfig?.texture);
   const light = isLightColor(colorHex, color);
   const aspectRatio = Math.min(Math.max(width / height, 0.75), 2.4);
+  const slatCount = getGarageDoorSlatCount(height);
+  const slatHeightPx =
+    panelSize.height > 0
+      ? panelSize.height / slatCount
+      : compact
+        ? 4.5
+        : 5;
+
+  const slatPattern = buildSlatPattern(slatHeightPx, light);
+  const slatIndexes = Array.from({ length: slatCount }, (_, index) => index);
+
+  useEffect(() => {
+    const node = panelRef.current;
+    if (!node) return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      setPanelSize({
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+      });
+    });
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [width, height, color, compact]);
 
   return (
     <div
@@ -97,30 +150,61 @@ export function GarageDoorPreview({
             </div>
 
             <div
+              ref={panelRef}
               className={cn(
-                'absolute inset-x-[6%] top-[4%] bottom-[6%] overflow-hidden rounded-[1px] shadow-[inset_0_2px_8px_rgba(0,0,0,0.18)]',
+                'absolute inset-x-[6%] top-[4%] bottom-[6%] overflow-hidden rounded-[1px] shadow-[inset_0_1px_4px_rgba(0,0,0,0.12)]',
                 light && 'ring-1 ring-slate-300',
               )}
-              style={{
-                backgroundColor: colorHex,
-                backgroundImage: `repeating-linear-gradient(
-                  to bottom,
-                  rgba(255,255,255,${light ? 0.08 : 0.06}) 0px,
-                  rgba(255,255,255,${light ? 0.08 : 0.06}) 1px,
-                  transparent 1px,
-                  transparent 11px,
-                  rgba(0,0,0,${light ? 0.1 : 0.16}) 11px,
-                  rgba(0,0,0,${light ? 0.1 : 0.16}) 12px
-                )`,
-              }}
+              style={{ backgroundColor: colorHex }}
             >
-              <div className="absolute inset-y-0 left-[18%] w-px bg-black/10" />
-              <div className="absolute inset-y-0 right-[18%] w-px bg-black/10" />
+              {hasWoodTexture ? (
+                <div className="flex h-full flex-col">
+                  {slatIndexes.map((slatIndex) => (
+                    <div
+                      key={slatIndex}
+                      className="relative min-h-0 flex-1 overflow-hidden"
+                    >
+                      <div
+                        className="absolute inset-0"
+                        style={
+                          panelSize.width > 0
+                            ? getGoldenOakSlatLayerStyle(slatIndex)
+                            : { backgroundColor: colorHex }
+                        }
+                      />
+                      <div
+                        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/25"
+                        aria-hidden
+                      />
+                      {slatIndex < slatCount - 1 && (
+                        <div
+                          className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-black/25"
+                          aria-hidden
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  className="absolute inset-0"
+                  style={{ backgroundImage: slatPattern }}
+                />
+              )}
+              {!hasWoodTexture && (
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-35"
+                  style={{ backgroundImage: slatPattern }}
+                  aria-hidden
+                />
+              )}
+              <div className="absolute inset-y-0 left-[18%] w-px bg-black/8" />
+              <div className="absolute inset-y-0 right-[18%] w-px bg-black/8" />
               <div
-                className="absolute inset-x-0 bottom-0 h-[10%]"
+                className="absolute inset-x-0 bottom-0 h-[6%]"
                 style={{
                   background:
-                    'linear-gradient(to top, rgba(0,0,0,0.18), transparent)',
+                    'linear-gradient(to top, rgba(0,0,0,0.12), transparent)',
                 }}
               />
             </div>
@@ -155,7 +239,11 @@ export function GarageDoorPreview({
                   'h-3 w-3 rounded-full ring-1 ring-black/10',
                   light && 'ring-slate-300',
                 )}
-                style={{ backgroundColor: colorHex }}
+                style={
+                  colorConfig
+                    ? getSwatchStyle(colorConfig)
+                    : { backgroundColor: colorHex }
+                }
               />
               {colorLabel}
             </span>

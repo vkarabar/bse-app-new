@@ -19,7 +19,8 @@ type ProductBreadcrumbKey =
   | 'kontroleri'
   | 'motoriVrati'
   | 'motoriPorti'
-  | 'komponenti';
+  | 'komponenti'
+  | 'rackiTendi';
 
 type Props = {
   productKey: ProductBreadcrumbKey;

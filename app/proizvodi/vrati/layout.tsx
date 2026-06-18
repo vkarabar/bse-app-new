@@ -1,5 +1,5 @@
 import { ProductBreadcrumb } from '@/components/product-breadcrumb';
-import { getServerTranslations } from '@/lib/i18n/get-server-translations';
+import { getPageMetadata } from '@/lib/get-page-metadata';
 import type { Metadata } from 'next';
 
 type Props = {
@@ -7,11 +7,7 @@ type Props = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getServerTranslations();
-  return {
-    title: t('metadata.vrati.title'),
-    description: t('metadata.vrati.description'),
-  };
+  return getPageMetadata('/proizvodi/vrati', 'metadata.vrati.title', 'metadata.vrati.description');
 }
 
 const VratiLayout = async ({ children }: Props) => {

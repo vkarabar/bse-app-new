@@ -1,5 +1,5 @@
 import { ProductBreadcrumb } from '@/components/product-breadcrumb';
-import { getServerTranslations } from '@/lib/i18n/get-server-translations';
+import { getPageMetadata } from '@/lib/get-page-metadata';
 import type { Metadata } from 'next';
 
 type Props = {
@@ -7,11 +7,11 @@ type Props = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getServerTranslations();
-  return {
-    title: t('metadata.komponenti.title'),
-    description: t('metadata.komponenti.description'),
-  };
+  return getPageMetadata(
+    '/proizvodi/komponenti',
+    'metadata.komponenti.title',
+    'metadata.komponenti.description',
+  );
 }
 
 const KomponentiLayout = async ({ children }: Props) => {

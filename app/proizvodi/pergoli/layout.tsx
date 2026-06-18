@@ -1,5 +1,5 @@
 import { ProductBreadcrumb } from '@/components/product-breadcrumb';
-import { getServerTranslations } from '@/lib/i18n/get-server-translations';
+import { getPageMetadata } from '@/lib/get-page-metadata';
 import type { Metadata } from 'next';
 
 type Props = {
@@ -7,11 +7,7 @@ type Props = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getServerTranslations();
-  return {
-    title: t('metadata.pergoli.title'),
-    description: t('metadata.pergoli.description'),
-  };
+  return getPageMetadata('/proizvodi/pergoli', 'metadata.pergoli.title', 'metadata.pergoli.description');
 }
 
 const PergoliLayout = async ({ children }: Props) => {
